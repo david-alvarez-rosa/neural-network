@@ -5,3 +5,5 @@
 /TAGS
 /.d/*
 /.o/*
+/a.out
+/test/**

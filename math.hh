@@ -11,7 +11,7 @@ VF sum(VF v, VF w);
 VF vectorDifference(VF v, VF w);
 
 // Given a vector returns position of the (first) maxim.
-int vectorMaxPos(VI v);
+int vectorMaxPos(VF v);
 
 // Multiplies matrix and vector.
 VF multiply(VVF A, VF v);

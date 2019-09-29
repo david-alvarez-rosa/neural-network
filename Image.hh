@@ -1,23 +1,22 @@
 #ifndef IMAGE_HH
 #define IMAGE_HH
 
-#include "defs.hh"
+#include <iostream>
 #include <fstream>
 #include <string>
+#include "defs.hh"
 
 
 class Image {
 public:
   VF pixels;
-  float label;
+  int label;
 
   // Reads next image of selected type.
-  Image(string type);
+  Image(ifstream& file);
 
 private:
   int size = 28; // Size of the image (height and width).
-  string trainFileName = "Data/labelImagesTraining.dat";
-  string testFileName = "Data/labelImagesTest.dat";
 };
 
 

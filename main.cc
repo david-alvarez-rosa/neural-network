@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include "defs.hh"
 #include "math.hh"
@@ -6,31 +7,30 @@
 #include "Image.hh"
 
 
-
 int main() {
-  // Read data.
-  const int numTrainImages = 300;
-  vector<Image> trainImages;
-  for (int i = 0; i < numTrainImages; ++i)
-    trainImages.push_back(Image("train"));
+  cout.setf(ios::fixed);
+  cout.precision(4);
 
-  const int numTestImages = 10;
+  // Read data.
+  const int numTrainImages = 2;
+  vector<Image> trainImages;
+  ifstream file("data/train.dat");
+  for (int i = 0; i < numTrainImages; ++i)
+    trainImages.push_back(Image(file));
+
+  const int numTestImages = 21;
   vector<Image> testImages;
+  file = ifstream("data/test.dat");
   for (int i = 0; i < numTestImages; ++i)
-    testImages.push_back(Image("test"));
+    testImages.push_back(Image(file));
 
   // Choose model and initialize Neural Network.
-  VI neuronsPerLayer = {5, 3, 3, 2};
+  VI neuronsPerLayer = {28*28, 300, 75, 10};
   NeuralNetwork neuralNetwork(neuronsPerLayer);
 
-  print(neuralNetwork.weights);
+  // Train Neural Network.
+  neuralNetwork.train(trainImages);
 
-  cout << endl;
-  VF x = {0.3, 0.8, 0.1, 0.9, 0.9};
-  // VVF X = forwardPropagation(neuralNetwork, x);
-
-  // VF y = X[X.size() - 1];
-  // applySoftmax(y);
-  // print(y);
-  // testImag
+  // Test Neural Network.
+  neuralNetwork.test(testImages);
 }

@@ -7,8 +7,8 @@
 // Activation function used for activate neurons.
 float activationFunction(float x);
 
-// Loss function to minimize in gradient descent.
-float lossFunction(VVF Y, VVF YP);
+// Error function to minimize in gradient descent.
+float errorFunction(VVF Y, VVF YP);
 
 
 #endif

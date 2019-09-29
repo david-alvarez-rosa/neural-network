@@ -9,48 +9,41 @@ void swap(float &a, float &b) {
 
 
 void print(VF v) {
-  int n = v.size();
-  for (int i = 0; i < n; ++i)
+  for (int i = 0; i < int(v.size()); ++i)
     cout << v[i] << '\t';
   cout << endl;
 }
 
 
 void print(VI v) {
-  int n = v.size();
-  for (int i = 0; i < n; ++i)
+  for (int i = 0; i < int(v.size()); ++i)
     cout << v[i] << '\t';
   cout << endl;
 }
 
 
 void print(VVF A) {
-   int m = A.size();
-   for (int i = 0; i < m; ++i)
-      print(A[i]);
+  for (int i = 0; i < int(A.size()); ++i)
+    print(A[i]);
 }
 
 
 void print(VVVF T) {
-   int p = T.size();
-   for (int k = 0; k < p; ++k) {
-      cout << "----------------" << k << "----------------" << endl;
-      print(T[k]);
-   }
+  for (int k = 0; k < int(T.size()); ++k) {
+    cout << "----------------" << k << "----------------" << endl;
+    print(T[k]);
+  }
 }
 
 
 void fillRandomly(VF &v) {
-  int n = v.size();
-  for (int i = 0; i < n; ++i)
-    v[i] = rand() / (double)RAND_MAX;
+  for (int i = 0; i < int(v.size()); ++i)
+    v[i] = 0.018 * rand() / float(RAND_MAX);
 }
 
 
 void fillRandomly(VVF &A) {
-   int m = A.size();
-   int n = A[0].size();
-   for (int i = 0; i < m; ++i)
-      for (int j = 0; j < n; ++j)
-	 A[i][j] = rand() / (double)RAND_MAX;
+  for (int i = 0; i < int(A.size()); ++i)
+    for (int j = 0; j < int(A[0].size()); ++j)
+      A[i][j] = 0.018 * rand() / float(RAND_MAX);
 }

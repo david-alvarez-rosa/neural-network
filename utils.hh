@@ -2,6 +2,7 @@
 #define UTILS_HH
 
 #include <iostream>
+#include <cstdlib>
 #include "defs.hh"
 
 

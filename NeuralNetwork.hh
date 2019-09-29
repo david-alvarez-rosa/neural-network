@@ -5,6 +5,7 @@
 #include "utils.hh"
 #include "math.hh"
 #include "custom.hh"
+#include "Image.hh"
 
 
 class NeuralNetwork {
@@ -16,19 +17,25 @@ public:
   // Constructor (given number of neurons per layer as a vector).
   NeuralNetwork(VI neuronsPerLayer);
 
-  // Update the neural network.
-  void update(VF X, VF Y);
+  // Train neural network.
+  void train(vector<Image>& images);
+
+  // Test neural network.
+  void test(vector<Image>& images);
 
 private:
-  struct gradients {
+  struct Gradient {
     VVVF weights;
     VVF biases;
   };
 
-  gradients gradient;
+  Gradient gradient;
 
   // Forward propagation to compute values of all neurons.
-  void forwardPropagation();
+  void forwardPropagation(VF X);
+
+  // Activation neurons in layer l.
+  void activateNeurons(int l);
 
   // Compute gradient.
   void backPropagation();
@@ -39,8 +46,8 @@ private:
   // Back propagate to compute a derivative respect a bias.
   void backPropagationBias(int l, int i);
 
-  // Activation neurons in layer l.
-  void activateNeurons(int l);
+  // Update weights and biases.
+  void updateWeightsAndBiases();
 };
 
 
