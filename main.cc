@@ -33,4 +33,4 @@ int main() {
   // applySoftmax(y);
   // print(y);
   // testImag
-    }
+}

@@ -1,5 +1,7 @@
-/Data/*
+/data/*
 /MNIST/*
 /kNN/*
-/a.out
+/main
 /TAGS
+/.d/*
+/.o/*

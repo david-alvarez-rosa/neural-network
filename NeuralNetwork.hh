@@ -20,10 +20,12 @@ public:
   void update(VF X, VF Y);
 
 private:
-  struct gradient {
+  struct gradients {
     VVVF weights;
     VVF biases;
   };
+
+  gradients gradient;
 
   // Forward propagation to compute values of all neurons.
   void forwardPropagation();

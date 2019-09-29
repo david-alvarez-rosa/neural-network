@@ -4,8 +4,8 @@
 NeuralNetwork::NeuralNetwork(VI neuronsPerLayer) {
   int numLayers = neuronsPerLayer.size();
   neurons = VVF(numLayers - 1);
-  weights, weightsGradient = VVVF(numLayers - 1);
-  biases,  biasesGradient  =  VVF(numLayers - 1);
+  weights = VVVF(numLayers - 1);
+  biases =  VVF(numLayers - 1);
   for (int l = 0; l < numLayers - 1; ++l) {
     neurons[l] = VF(neuronsPerLayer[l]);
     weights[l] = VVF(neuronsPerLayer[l + 1], VF(neuronsPerLayer[l]));
