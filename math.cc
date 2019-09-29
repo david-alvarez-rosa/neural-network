@@ -1,51 +1,6 @@
-#include <vector>
-
-using namespace std;
-
-using VF = vector<float>;
-using VVF = vector<VF>;
-using VVVF = vector<VVF>;
-using VI = vector<int>;
+#include "math.hh"
 
 
-const double M_E = 2.7182818284590452353;
-
-
-// Swaps two elements.
-void swap(float &a, float &b) {
-   float c = a;
-   a = b;
-   b = c;
-}
-
-
-// Print a vector.
-void print(VF v) {
-   int n = v.size();
-   for (int i = 0; i < n; ++i)
-      cout << v[i] << '\t';
-   cout << endl;
-}
-
-
-// Print a vector.
-void print(VI v) {
-   int n = v.size();
-   for (int i = 0; i < n; ++i)
-      cout << v[i] << '\t';
-   cout << endl;
-}
-
-
-// Fill randomnly a vector (entries between 0 and 1).
-void fillRandomly(VF &v) {
-   int n = v.size();
-   for (int i = 0; i < n; ++i)
-      v[i] = rand() / (double)RAND_MAX;
-}
-
-
-// Given two vectors v and w, computes v + w.
 VF sum(VF v, VF w) {
    int n = v.size();
    for (int i = 0; i < n; ++i)
@@ -54,7 +9,6 @@ VF sum(VF v, VF w) {
 }
 
 
-// Given two vectors v and w, computes v - w.
 VF vectorDifference(VF v, VF w) {
    int n = v.size();
    for (int i = 0; i < n; ++i)
@@ -63,7 +17,6 @@ VF vectorDifference(VF v, VF w) {
 }
 
 
-// Given a vector returns position of the (first) maxim.
 int vectorMaxPos(VI v) {
    int n = v.size();
    int maxValue = v[0];
@@ -77,15 +30,6 @@ int vectorMaxPos(VI v) {
 }
 
 
-// Print a matrix.
-void print(VVF A) {
-   int m = A.size();
-   for (int i = 0; i < m; ++i)
-      print(A[i]);
-}
-
-
-// Multiplies matrix and vector.
 VF multiply(VVF A, VF v) {
    int m = A.size();
    int n = A[0].size();
@@ -97,27 +41,6 @@ VF multiply(VVF A, VF v) {
 }
 
 
-// Fill randomnly a matrix (entries between 0 and 1).
-void fillRandomly(VVF &A) {
-   int m = A.size();
-   int n = A[0].size();
-   for (int i = 0; i < m; ++i)
-      for (int j = 0; j < n; ++j)
-	 A[i][j] = rand() / (double)RAND_MAX;
-}
-
-
-// Prints tensor.
-void print(VVVF T) {
-   int p = T.size();
-   for (int k = 0; k < p; ++k) {
-      cout << "----------------" << k << "----------------" << endl;
-      print(T[k]);
-   }
-}
-
-
-// Computes a^n, with n a non-negative integer.
 double pow(double a, int n) {
    if (n == 0)
       return 1;
@@ -129,7 +52,6 @@ double pow(double a, int n) {
 }
 
 
-// Computes exp(x) for small x (between 0 and 1).
 double expInterval(double x) {
    int maxIter = 16;
    double sol = 0;
@@ -144,8 +66,8 @@ double expInterval(double x) {
 }
 
 
-// Computes exp(x).
 double exp(double x) {
+  const double M_E = 2.7182818284590452353;
    if (x >= 0) {
       int n = x;
       return expInterval(x - n)*pow(M_E, n);
@@ -154,7 +76,6 @@ double exp(double x) {
 }
 
 
-// Computes the square of the Euclidian norm of a vector.
 double euclidianNormSquared(VF v) {
    double norm = 0;
    int n = v.size();
@@ -164,13 +85,11 @@ double euclidianNormSquared(VF v) {
 }
 
 
-// Computes the Euclidian Distance between two vectors.
 float euclidianDistanceSquared(VF v, VF w) {
    return euclidianNormSquared(vectorDifference(v, w));
 }
 
 
-// Softmax function (inplace).
 void applySoftmax(VF &v) {
    int n = v.size();
    double den = 0;
@@ -183,13 +102,11 @@ void applySoftmax(VF &v) {
 }
 
 
-// Sigmoid function.
 double sigmoid(double x) {
    return 1/(1 + exp(-x));
 }
 
 
-// Sigmoid function for a vector (inplace).
 VF applySigmoid(VF &v) {
    int n = v.size();
    for (int i = 0; i < n; ++i)

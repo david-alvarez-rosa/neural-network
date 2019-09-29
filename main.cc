@@ -2,10 +2,9 @@
 #include <fstream>
 #include <vector>
 #include <cstdlib>
-#include "functions.hh"
-
-using namespace std;
-
+#include "defs.hh"
+#include "math.hh"
+#include "NeuralNetwork.hh"
 
 const int numTrainingImages = 300;
 const int numTestImages = 10;
