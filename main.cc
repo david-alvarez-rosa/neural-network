@@ -10,12 +10,6 @@ const int numTrainingImages = 300;
 const int numTestImages = 10;
 
 
-struct gradient {
-  VVVF weightsDerivatives;
-  VVF biasesDerivatives;
-};
-
-
 // Reads images and labels.
 void readData(VVF &images, VF &labels, string dataFileName, int numImages) {
   ifstream dataFile(dataFileName, ifstream::in);
@@ -26,15 +20,6 @@ void readData(VVF &images, VF &labels, string dataFileName, int numImages) {
       images[i][j] /= 255;
     }
   }
-}
-
-// Loss function.
-double lossFunction(VVF Y, VVF YP) {
-  double loss = 0;
-  int m = YP.size();
-  for (int i = 0; i < m; ++i)
-    loss += euclidianDistanceSquared(YP[i], Y[i]);
-  return loss;
 }
 
 

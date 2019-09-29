@@ -9,7 +9,7 @@ VF sum(VF v, VF w) {
 }
 
 
-VF vectorDifference(VF v, VF w) {
+VF difference(VF v, VF w) {
    int n = v.size();
    for (int i = 0; i < n; ++i)
       v[i] -= w[i];
@@ -41,22 +41,22 @@ VF multiply(VVF A, VF v) {
 }
 
 
-double pow(double a, int n) {
+float pow(float a, int n) {
    if (n == 0)
       return 1;
    if (n%2 == 0) {
-      double aux = pow(a, n/2);
+      float aux = pow(a, n/2);
       return aux*aux;
    }
    return a*pow(a, n - 1);
 }
 
 
-double expInterval(double x) {
+float expInterval(float x) {
    int maxIter = 16;
-   double sol = 0;
+   float sol = 0;
    int faci = 1;
-   double powx = 1;
+   float powx = 1;
    for (int i = 0; i < maxIter; ++i) {
       sol += powx/(faci);
       powx *= x;
@@ -66,8 +66,8 @@ double expInterval(double x) {
 }
 
 
-double exp(double x) {
-  const double M_E = 2.7182818284590452353;
+float exp(float x) {
+  const float M_E = 2.7182818284590452353;
    if (x >= 0) {
       int n = x;
       return expInterval(x - n)*pow(M_E, n);
@@ -76,40 +76,13 @@ double exp(double x) {
 }
 
 
-double euclidianNormSquared(VF v) {
-   double norm = 0;
-   int n = v.size();
-   for (int i = 0; i < n; ++i)
-      norm += v[i]*v[i];
-   return norm;
-}
-
-
-float euclidianDistanceSquared(VF v, VF w) {
-   return euclidianNormSquared(vectorDifference(v, w));
-}
-
-
 void applySoftmax(VF &v) {
    int n = v.size();
-   double den = 0;
+   float den = 0;
    for (int i = 0; i < n; ++i) {
       v[i] = exp(v[i]);
       den += v[i];
    }
    for (int i = 0; i < n; ++i)
       v[i] /= den;
-}
-
-
-double sigmoid(double x) {
-   return 1/(1 + exp(-x));
-}
-
-
-VF applySigmoid(VF &v) {
-   int n = v.size();
-   for (int i = 0; i < n; ++i)
-      v[i] = sigmoid(v[i]);
-   return v;
 }

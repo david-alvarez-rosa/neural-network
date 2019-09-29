@@ -55,5 +55,6 @@ void NeuralNetwork::backPropagationBias(int l, int i) {
 
 
 void NeuralNetwork::activateNeurons(int l) {
-  applySigmoid(neurons[l]);
+  for (int i = 0; i < int(neurons[l].size()); ++i)
+    neurons[l][i] = activationFunction(neurons[l][i]);
 }
