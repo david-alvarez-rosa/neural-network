@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <cstdlib>
-#include "defs.hh"
+#include "Defs.hh"
 
 
 // Swaps two elements.

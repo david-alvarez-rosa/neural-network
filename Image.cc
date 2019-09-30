@@ -8,4 +8,6 @@ Image::Image(ifstream& file) {
     file >> pixels[i];
     pixels[i] /= 255;
   }
+  Y = VF(10, 0);
+  Y[label] = 1;
 }

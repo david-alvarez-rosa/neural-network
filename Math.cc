@@ -1,20 +1,27 @@
-#include "math.hh"
+#include "Math.hh"
 
 
 VF sum(VF v, VF w) {
-  int n = v.size();
-  for (int i = 0; i < n; ++i)
+  for (int i = 0; i < int(v.size()); ++i)
     v[i] += w[i];
   return v;
 }
 
 
 VF difference(VF v, VF w) {
-  int n = v.size();
-  for (int i = 0; i < n; ++i)
+  for (int i = 0; i < int(v.size()); ++i)
     v[i] -= w[i];
   return v;
 }
+
+
+float dotProduct(VF v, VF w) {
+  float sol = 0;
+  for (int i = 0; i < int(v.size()); ++i)
+    sol += v[i] * w[i];
+  return sol;
+}
+
 
 int vectorMaxPos(VF v) {
   float maxValue = v[0];
@@ -29,11 +36,9 @@ int vectorMaxPos(VF v) {
 
 
 VF multiply(VVF A, VF v) {
-  int m = A.size();
-  int n = A[0].size();
-  VF Av(m, 0);
-  for (int i = 0; i < m; ++i)
-    for (int j = 0; j < n; ++j)
+  VF Av(A.size(), 0);
+  for (int i = 0; i < int(A.size()); ++i)
+    for (int j = 0; j < int(A[0].size()); ++j)
       Av[i] += A[i][j]*v[j];
   return Av;
 }
@@ -65,6 +70,14 @@ float expInterval(float x) {
 
 
 float exp(float x) {
+  // TODO: para evitar overflows.
+  // Cambiar esto.
+  if (x > 15)
+    x = 10;
+  else if (x < -15)
+    x = -10;
+  // Cambiar esto.
+
   const float M_E = 2.7182818284590452353;
   if (x >= 0) {
     int n = x;
@@ -74,13 +87,21 @@ float exp(float x) {
 }
 
 
-void applySoftmax(VF &v) {
-  int n = v.size();
-  float den = 0;
-  for (int i = 0; i < n; ++i) {
-    v[i] = exp(v[i]);
-    den += v[i];
-   }
-   for (int i = 0; i < n; ++i)
-      v[i] /= den;
+float log(float x) {
+  float solRight = 0;
+  float solLeft = 0;
+  while (exp(solRight) < x)
+    solRight += 10;
+  while (exp(solLeft) > x)
+    solLeft -= 10;
+
+  while (solRight - solLeft > 1e-6) {
+    float solMed = (solRight + solLeft) / 2;
+    if (exp(solMed) > x)
+      solRight = solMed;
+    else
+      solLeft = solMed;
+  }
+
+  return (solRight + solLeft) / 2;
 }

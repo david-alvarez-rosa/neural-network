@@ -10,6 +10,8 @@ using namespace std;
 using VF = vector<float>;
 using VVF = vector<VF>;
 using VVVF = vector<VVF>;
+using VVVVF = vector<VVVF>;
+using VVVVVF = vector<VVVVF>;
 using VI = vector<int>;
 
 

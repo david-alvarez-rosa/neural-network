@@ -4,13 +4,14 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "defs.hh"
+#include "Defs.hh"
 
 
 class Image {
 public:
   VF pixels;
   int label;
+  VF Y; // Convert label to output vector of 0's and 1's.
 
   // Reads next image of selected type.
   Image(ifstream& file);

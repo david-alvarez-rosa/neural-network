@@ -1,4 +1,4 @@
-#include "utils.hh"
+#include "Utils.hh"
 
 
 void swap(float &a, float &b) {
@@ -38,12 +38,12 @@ void print(VVVF T) {
 
 void fillRandomly(VF &v) {
   for (int i = 0; i < int(v.size()); ++i)
-    v[i] = 0.018 * rand() / float(RAND_MAX);
+    v[i] = 0.01 * rand() / float(RAND_MAX);
 }
 
 
 void fillRandomly(VVF &A) {
   for (int i = 0; i < int(A.size()); ++i)
     for (int j = 0; j < int(A[0].size()); ++j)
-      A[i][j] = 0.018 * rand() / float(RAND_MAX);
+      A[i][j] = 0.01 * rand() / float(RAND_MAX);
 }

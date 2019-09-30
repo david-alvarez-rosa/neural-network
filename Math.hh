@@ -1,7 +1,7 @@
 #ifndef MATH_HH
 #define MATH_HH
 
-#include "defs.hh"
+#include "Defs.hh"
 
 
 // Given two vectors v and w, computes v + w.
@@ -9,6 +9,9 @@ VF sum(VF v, VF w);
 
 // Given two vectors v and w, computes v - w.
 VF vectorDifference(VF v, VF w);
+
+// Dot product between two vectors v and w.
+float dotProduct(VF v, VF w);
 
 // Given a vector returns position of the (first) maxim.
 int vectorMaxPos(VF v);
@@ -25,8 +28,8 @@ float expInterval(float x);
 // Computes exp(x).
 float exp(float x);
 
-// Softmax function (inplace).
-void applySoftmax(VF &v);
+// Computes log(x).
+float log(float x);
 
 
 #endif
