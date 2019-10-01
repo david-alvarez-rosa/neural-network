@@ -6,14 +6,13 @@
 #include "Math.hh"
 #include "Custom.hh"
 #include "Data.hh"
-#include "Image.hh"
-#include "Auxiliares.hh"
 
 
 class NeuralNetwork {
 public:
   VVF neurons;
   VVVF weights; VVF biases;
+  VF out; // Output of the Neural Network.
 
   // Constructor (given number of neurons per layer as a vector).
   NeuralNetwork(VI neuronsPerLayer);
@@ -35,7 +34,7 @@ private:
   // Partial derivative of x[l][k] respect weight[t][i][j].
   VVVVVF partialsNeuronsWeights;
 
-  // Partial derivative of yp[k] respect x[L][p]. Is derivativesAux[p][k].
+  // Partial derivative of yp[k] respect x[L][p]. Is partialsOutputneurons[p][k].
   VVF partialsOutputNeurons;
 
   // Before aplying activation function.
@@ -50,23 +49,29 @@ private:
   // Activation neurons in layer l.
   void activateNeurons(int l);
 
-  // Compute gradient.
-  void computeGradient(vector<Data>& dataset);
+  // Acumulate the gradient of error respect single data in dataset.
+  void dataGradient(Data& data);
 
-  // Initialize with -1's tensor with partial derivatives and gradient with 0's.
-  void initializeGradientVariables();
+  // Initialize gradient with 0's.
+  void initializeGradient();
+
+  // Initialize with -1's tensor with partial derivatives.
+  void initializePartialsNeuronsWeights();
 
   // Compute individual gradient.
-  float individualGradient(int t, int i, int j, Data& data);
+  float partialDataErrorWeight(int t, int i, int j, Data& data);
 
   // Compute partial derivatives of x[l][k] respect weight[t][i][j].
   float partialNeuronWeight(int l, int k, int t, int i, int j);
 
-  // TODO: Compute somo derivatives.
+  // Compute partial derivatives of output respect last layer neurons.
   void partialOutputNeurons();
 
   // Update weights and biases.
   void updateWeightsAndBiases();
+
+  // Compute total error.
+  float errorDataset(vector<Data>& dataset);
 };
 
 

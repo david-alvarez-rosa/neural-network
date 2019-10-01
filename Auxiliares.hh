@@ -7,8 +7,4 @@
 #include "Custom.hh"
 
 
-// Compute actual error for given image.
-float computeError(VVF& neurons, VF& Y);
-
-
 #endif

@@ -3,6 +3,8 @@
 
 // Define here your activation function.
 float activation(float x) {
+  // This is without activation function.
+  return x;
   // This is a modified ReLU
   if (x >= 0)
     return x;
@@ -18,6 +20,13 @@ float activation(float x) {
 
 // Define here the derivative of the activation function.
 float activationDerivative(float x) {
+  // Thisi s without activation function.
+  return 1;
+  // This is the modified ReLU derivative.
+  if (x >= 0)
+    return 1;
+  return 1/100;
+  // This is the ReLU derivative.
   if (x >= 0)
     return 1;
   return 0;
@@ -25,7 +34,7 @@ float activationDerivative(float x) {
 
 
 // Define here your error function (for comparing two real numbers).
-float error(float y, float yp) {
+float errorFunction(float y, float yp) {
   // // This is the cross-entropy error.
   // return -y * log(yp);
   // This is for euclidian distance.
@@ -42,9 +51,9 @@ float errorDerivative(float y, float yp) {
 }
 
 
-// Define here your functions that normalizes output into a probability
+// Define here your function that normalizes output into a probability
 // distribution.
-void convertIntoProbDist(VF& v) {
+VF convertIntoProbDist(VF v) {
   // This is the softmax.
   float denominator = 0;
   for (int i = 0; i < int(v.size()); ++i) {
@@ -53,6 +62,8 @@ void convertIntoProbDist(VF& v) {
   }
   for (int i = 0; i < int(v.size()); ++i)
     v[i] /= denominator;
+
+  return v;
 }
 
 
@@ -62,9 +73,9 @@ void convertIntoProbDist(VF& v) {
 VF convertIntoProbDistDerivative(VF w, int k) {
   // This is the softmax derivative.
   // normalizeIntoProbabilityDist(w);
-  VF derivative(w.size());
-  for (int i = 0; i < int(derivative.size()) and i != k; ++i)
-    derivative[k] = - w[k] * w[i];
+  VF derivative(w.size(), -1);
+    for (int i = 0; i < int(derivative.size()); ++i)
+      if (i != k) derivative[i] = - w[k] * w[i];
   derivative[k] = w[k] * (1 - w[k]);
   return derivative;
 }

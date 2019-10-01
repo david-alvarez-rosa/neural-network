@@ -11,13 +11,13 @@ float activation(float x);
 float activationDerivative(float x);
 
 // Error function to minimize in gradient descent.
-float error(float y, float yp);
+float errorFunction(float y, float yp);
 
 // Derivative of the error function whith respect yp.
 float errorDerivative(float y, float yp);
 
 // Functions thath normalizes output into a probability distribution.
-void convertIntoProbDist(VF& v);
+VF convertIntoProbDist(VF v);
 
 // Derivative of the previous function respect v[k].
 VF convertIntoProbDistDerivative(VF w, int k);

@@ -4,7 +4,7 @@
 #include "Defs.hh"
 #include "Math.hh"
 #include "NeuralNetwork.hh"
-#include "Image.hh"
+#include "Data.hh"
 
 
 int main() {
@@ -12,25 +12,28 @@ int main() {
   cout.precision(4);
 
   // Read data.
-  const int numTrainImages = 50;
-  vector<Image> trainImages;
+  const int sizeTrainDataset = 3;
+  vector<Data> trainDataset;
+  // ifstream file("test/train.dat");
   ifstream file("data/train.dat");
-  for (int i = 0; i < numTrainImages; ++i)
-    trainImages.push_back(Image(file));
+  for (int i = 0; i < sizeTrainDataset; ++i)
+    trainDataset.push_back(Data(file));
 
-  const int numTestImages = 50;
-  vector<Image> testImages;
+  const int sizeTestDataset = 0;
+  vector<Data> testDataset;
   file = ifstream("data/test.dat");
-  for (int i = 0; i < numTestImages; ++i)
-    testImages.push_back(Image(file));
+  for (int i = 0; i < sizeTestDataset; ++i)
+    testDataset.push_back(Data(file));
 
   // Choose model and initialize Neural Network.
-  VI neuronsPerLayer = {28*28, 100, 30, 10};
+  // VI neuronsPerLayer = {3, 2};
+
+  VI neuronsPerLayer = {28*28, 40, 30, 10}; //
   NeuralNetwork neuralNetwork(neuronsPerLayer);
 
   // Train Neural Network.
-  neuralNetwork.train(trainImages);
+  neuralNetwork.train(trainDataset);
 
   // Test Neural Network.
-  neuralNetwork.test(testImages);
+  neuralNetwork.test(testDataset);
 }
