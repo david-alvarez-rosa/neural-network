@@ -12,10 +12,10 @@ int main() {
   cout.precision(4);
 
   // Read data.
-  const int sizeTrainDataset = 1;
+  const int sizeTrainDataset = 2;
   vector<Data> trainDataset;
-  ifstream file("data/train.dat");
-  // ifstream file("test/train.dat");
+  // ifstream file("data/train.dat");
+  ifstream file("test/train.dat");
   for (int i = 0; i < sizeTrainDataset; ++i)
     trainDataset.push_back(Data(file));
 
@@ -26,8 +26,8 @@ int main() {
     testDataset.push_back(Data(file));
 
   // Choose model and initialize Neural Network.
-  // VI neuronsPerLayer = {3, 2}; //
-  VI neuronsPerLayer = {28*28, 40, 10};
+  VI neuronsPerLayer = {3, 2}; //
+  // VI neuronsPerLayer = {28*28, 40, 10};
   NeuralNetwork neuralNetwork(neuronsPerLayer);
 
   // Train Neural Network.

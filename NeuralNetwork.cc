@@ -13,14 +13,14 @@ NeuralNetwork::NeuralNetwork(VI neuronsPerLayer) {
   for (int l = 0; l < numLayers - 1; ++l) {
     weights[l] = VVF(neuronsPerLayer[l + 1], VF(neuronsPerLayer[l]));
     fillRandomly(weights[l]);
-    biases[l] = VF(neuronsPerLayer[l + 1], 0);
-    // fillRandomly(biases[l]);
+    biases[l] = VF(neuronsPerLayer[l + 1]);
+    fillRandomly(biases[l]);
   }
 }
 
 
 void NeuralNetwork::train(vector<Data>& dataset) {
-  for (int step = 0; step < 25; ++step) {
+  for (int step = 0; step < 500; ++step) {
     // cout << "Train_step: " << step << endl;
     trainStep(dataset);
     // cout << endl << endl << endl;
@@ -38,6 +38,7 @@ void NeuralNetwork::trainStep(vector<Data>& dataset) {
 
   for (int d = 0; d < int(dataset.size()); ++d) {
     initializePartialsNeuronsWeights();
+    initializePartialsNeuronsBiases();
     cout << "d: " << d << endl;
     // cout << "Feeding forward process starts." << endl;
     feedForward(dataset[d].in);
@@ -66,6 +67,8 @@ void NeuralNetwork::trainStep(vector<Data>& dataset) {
 
     // cout << "Computing dataGradient process starts." << endl;
     dataGradient(dataset[d]);
+
+    cout << "after" << endl;
 
     // cout << "gradient: ";
     // print(gradient.weights);
@@ -135,10 +138,16 @@ void NeuralNetwork::dataGradient(Data& data) {
   // Compute partial derivatives of output respect neurons.
   partialOutputNeurons();
 
+  // Gradient respect weights.
   for (int t = 0; t < int(weights.size()); ++t)
     for (int i = 0; i < int(weights[t].size()); ++i)
       for (int j = 0; j < int(weights[t][i].size()); ++j)
         gradient.weights[t][i][j] += partialDataErrorWeight(t, i, j, data);
+
+  // Gradient respect biases.
+  for (int t = 0; t < int(biases.size()); ++t)
+    for (int i = 0; i < int(biases[t].size()); ++i)
+      gradient.biases[t][i] += partialDataErrorBias(t, i, data);
 }
 
 
@@ -149,6 +158,20 @@ float NeuralNetwork::partialDataErrorWeight(int t, int i, int j, Data& data) {
     float aux = 0;
     for (int p = 0; p < int(neurons[numLayers - 1].size()); ++p)
       aux += partialsOutputNeurons[q][p] * partialNeuronWeight(numLayers - 1, p, t, i, j);
+    derivative += (aux * errorDerivative(data.out[q], out[q]));
+  }
+
+  return derivative;
+}
+
+
+float NeuralNetwork::partialDataErrorBias(int t, int i, Data& data) {
+  float derivative = 0;
+  for (int q = 0; q < int(out.size()); ++q) {
+    int numLayers = neurons.size();
+    float aux = 0;
+    for (int p = 0; p < int(neurons[numLayers - 1].size()); ++p)
+      aux += partialsOutputNeurons[q][p] * partialNeuronBias(numLayers - 1, p, t, i);
     derivative += (aux * errorDerivative(data.out[q], out[q]));
   }
 
@@ -175,6 +198,19 @@ void NeuralNetwork::initializePartialsNeuronsWeights() {
       for (int t = 0; t < int(partialsNeuronsWeights[l][k].size()); ++t)
         partialsNeuronsWeights[l][k][t] = VVF(neurons[t + 1].size(),
                                               VF(neurons[t].size(), -1));
+    }
+  }
+}
+
+
+void NeuralNetwork::initializePartialsNeuronsBiases() {
+  partialsNeuronsBiases = VVVVF(neurons.size());
+  for (int l = 0; l < int(partialsNeuronsBiases.size()); ++l) {
+    partialsNeuronsBiases[l] = VVVF(neurons[l].size());
+    for (int k = 0; k < int(partialsNeuronsBiases[l].size()); ++k) {
+      partialsNeuronsBiases[l][k] = VVF(neurons.size() - 1);
+      for (int t = 0; t < int(partialsNeuronsBiases[l][k].size()); ++t)
+        partialsNeuronsBiases[l][k][t] = VF(neurons[t].size(), -1);
     }
   }
 }
@@ -211,6 +247,24 @@ float NeuralNetwork::partialNeuronWeight(int l, int k, int t, int i, int j) {
 }
 
 
+float NeuralNetwork::partialNeuronBias(int l, int k, int t, int i) {
+  float& partial = partialsNeuronsBiases[l][k][t][i];
+  if (partial != -1)
+    return partial;
+  if (t > l - 1 or (t == l - 1 and k != i))
+    return partial = 0;
+
+  if (t == l - 1 and k == i)
+    return partial = activationDerivative(neuronsNotActivated[l - 1][k]);
+
+  float aux = 0;
+  for (int p = 0; p < int(neurons[l - 1].size()); ++p)
+    aux += (weights[l - 1][k][p] * partialNeuronBias(l - 1, p, t, i));
+
+  return partial = (activationDerivative(neuronsNotActivated[l - 1][k]) * aux);
+}
+
+
 void NeuralNetwork::updateWeightsAndBiases() {
   const float alpha = 0.01; // Learn update value.
 
@@ -220,10 +274,10 @@ void NeuralNetwork::updateWeightsAndBiases() {
       for (int j = 0; j < int(weights[l][i].size()); ++j)
         weights[l][i][j] -= alpha * gradient.weights[l][i][j];
 
-  // // Update biases.
-  // for (int l = 0; l < int(biases.size()); ++l)
-  //   for (int i = 0; i < int(biases[l].size()); ++i)
-  //     biases[l][i] -= alpha * gradient.biases[l][i];
+  // Update biases.
+  for (int l = 0; l < int(biases.size()); ++l)
+    for (int i = 0; i < int(biases[l].size()); ++i)
+      biases[l][i] -= alpha * gradient.biases[l][i];
 }
 
 

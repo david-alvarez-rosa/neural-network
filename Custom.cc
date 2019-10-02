@@ -25,7 +25,7 @@ float activationDerivative(float x) {
   // This is the modified ReLU derivative.
   if (x >= 0)
     return 1;
-  return 1/100;
+  // return 1/100;
   // This is the ReLU derivative.
   if (x >= 0)
     return 1;

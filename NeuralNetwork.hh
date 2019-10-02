@@ -34,6 +34,9 @@ private:
   // Partial derivative of x[l][k] respect weight[t][i][j].
   VVVVVF partialsNeuronsWeights;
 
+  // Partial derivative of x[l][k] respect bias[t][i].
+  VVVVF partialsNeuronsBiases;
+
   // Partial derivative of yp[k] respect x[L][p]. Is partialsOutputneurons[p][k].
   VVF partialsOutputNeurons;
 
@@ -58,11 +61,20 @@ private:
   // Initialize with -1's tensor with partial derivatives.
   void initializePartialsNeuronsWeights();
 
-  // Compute individual gradient.
+  // Initialize with -1's tensor with partial derivatives.
+  void initializePartialsNeuronsBiases();
+
+  // Compute individual gradient respect a weight.
   float partialDataErrorWeight(int t, int i, int j, Data& data);
+
+  // Compute individual gradient respect a bias.
+  float partialDataErrorBias(int t, int i, Data& data);
 
   // Compute partial derivatives of x[l][k] respect weight[t][i][j].
   float partialNeuronWeight(int l, int k, int t, int i, int j);
+
+  // Compute partial derivatives of x[l][k] respect biast[t][i].
+  float partialNeuronBias(int l, int k, int t, int i);
 
   // Compute partial derivatives of output respect last layer neurons.
   void partialOutputNeurons();
