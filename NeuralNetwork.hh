@@ -70,8 +70,8 @@ private:
   // Update weights and biases.
   void updateWeightsAndBiases();
 
-  // Compute total error.
-  float errorDataset(vector<Data>& dataset);
+  // Compute error.
+  float errorData(Data& datas);
 };
 
 

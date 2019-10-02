@@ -72,9 +72,9 @@ float expInterval(float x) {
 float exp(float x) {
   // TODO: para evitar overflows.
   // Cambiar esto.
-  if (x > 15)
+  if (x > 50)
     x = 10;
-  else if (x < -15)
+  else if (x < -50)
     x = -10;
   // Cambiar esto.
 
