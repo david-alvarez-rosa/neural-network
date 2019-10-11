@@ -5,12 +5,13 @@
 
 
 // Declarations of multiple dimensions vectors of floats.
-using VF = std::vector<float>;
-using VVF = std::vector<VF>;
-using VVVF = std::vector<VVF>;
-using VVVVF = std::vector<VVVF>;
-using VVVVVF = std::vector<VVVVF>;
-using VI = std::vector<int>;
+typedef std::vector<int> VI;
+typedef std::vector<float> VF;
+typedef std::vector<VF> VVF;
+typedef std::vector<VVF> VVVF;
+typedef std::vector<VVVF> VVVVF;
+typedef std::vector<VVVVF> VVVVVF;
+
 
 
 #endif

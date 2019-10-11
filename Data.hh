@@ -12,7 +12,7 @@ public:
   VF out; // Vector de salida.
 
   // Constructor that reads the data.
-  Data(std::fstream& file);
+  Data(std::ifstream& file);
 };
 
 

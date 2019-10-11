@@ -14,15 +14,15 @@ int main() {
   // Read data.
   const int sizeTrainDataset = 3;
   std::vector<Data> trainDataset;
-  std::fstream file("data/train.dat", std::fstream::in);
+  std::ifstream fileTrain("data/train.dat");
   for (int i = 0; i < sizeTrainDataset; ++i)
-    trainDataset.push_back(Data(file));
+    trainDataset.push_back(Data(fileTrain));
 
   const int sizeTestDataset = 0;
   std::vector<Data> testDataset;
-  file = std::fstream("data/test.dat", std::fstream::in);
+  std::ifstream fileTest("data/test.dat");
   for (int i = 0; i < sizeTestDataset; ++i)
-    testDataset.push_back(Data(file));
+    testDataset.push_back(Data(fileTest));
 
   // Choose model and initialize Neural Network.
   std::vector<int> neuronsPerLayer = {28*28, 30, 10};

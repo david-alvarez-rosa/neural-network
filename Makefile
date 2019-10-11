@@ -36,7 +36,7 @@ OBJS=$(patsubst %,$(OBJDIR)/%.o,$(basename $(SRCS)))
 DEPS=$(patsubst %,$(DEPDIR)/%.d,$(basename $(SRCS)))
 
 CFLAGS=
-CXXFLAGS= -g -O2
+CXXFLAGS= -g -O2 --std=c++11
 CPPFLAGS += -MMD -MP -MF $(DEPDIR)/$*.Td
 LIBS=
 LDFLAGS=

@@ -2,7 +2,7 @@
 
 
 // Define here your function that reads data.
-Data::Data(std::fstream& file) {
+Data::Data(std::ifstream& file) {
   int size = 28;
   in = VF(size * size);
   int label;
