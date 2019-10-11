@@ -12,7 +12,7 @@ int main() {
   std::cout.precision(4);
 
   // Read data.
-  const int sizeTrainDataset = 1500;
+  const int sizeTrainDataset = 1000;
   std::vector<Data> trainDataset;
   std::ifstream fileTrain("data/train.dat");
   for (int i = 0; i < sizeTrainDataset; ++i)
@@ -29,7 +29,7 @@ int main() {
   NeuralNetwork neuralNetwork(neuronsPerLayer);
 
   // Train Neural Network.
-  neuralNetwork.train(trainDataset, 20);
+  neuralNetwork.train(trainDataset, 1000);
 
   // Test Neural Network.
   neuralNetwork.test(testDataset);

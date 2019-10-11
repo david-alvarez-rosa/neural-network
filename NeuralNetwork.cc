@@ -25,7 +25,7 @@ void NeuralNetwork::train(const std::vector<Data>& dataset, int steps) {
 }
 
 
-// TODO: delete this line.
+// TODO: delete this line, when saving weights is done in other file.
 #include <fstream>
 
 
@@ -41,7 +41,9 @@ void NeuralNetwork::trainStep(const std::vector<Data>& dataset) {
     initializePartialsNeuronsBiases();
 
     feedForward(dataset[d].in);
-    dataGradient(dataset[d]);
+
+    if ((rand() / float(RAND_MAX) < 0.4))
+      dataGradient(dataset[d]);
 
     error += errorData(dataset[d]);
   }

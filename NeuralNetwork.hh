@@ -1,6 +1,7 @@
 #ifndef NEURALNETWORK_HH
 #define NEURALNETWORK_HH
 
+#include <cstdlib>
 #include "Defs.hh"
 #include "Utils.hh"
 #include "Math.hh"
