@@ -70,13 +70,8 @@ float expInterval(float x) {
 
 
 float exp(float x) {
-  // TODO: para evitar overflows.
-  // Cambiar esto.
-  if (x > 50)
-    x = 10;
-  else if (x < -50)
-    x = -10;
-  // Cambiar esto.
+  if (x > 20 or x < -20)
+    std::cout << "Se está aplicando la exponencial a un valor x, |x| > 20." << std::endl;
 
   const float M_E = 2.7182818284590452353;
   if (x >= 0) {

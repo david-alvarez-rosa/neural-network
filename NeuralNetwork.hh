@@ -18,7 +18,7 @@ public:
   NeuralNetwork(std::vector<int> neuronsPerLayer);
 
   // Train neural network.
-  void train(const std::vector<Data>& data);
+  void train(const std::vector<Data>& data, int steps);
 
   // Test neural network.
   void test(const std::vector<Data>& data);

@@ -20,7 +20,7 @@ float errorDerivative(float y, float yp);
 VF convertIntoProbDist(VF v);
 
 // Derivative of the previous function respect v[k].
-VF convertIntoProbDistDerivative(VF w, int k);
+float convertIntoProbDistDerivative(int p, int q, const VF& out);
 
 
 #endif

@@ -19,12 +19,10 @@ NeuralNetwork::NeuralNetwork(std::vector<int> neuronsPerLayer) {
 }
 
 
-void NeuralNetwork::train(const std::vector<Data>& dataset) {
-  for (int step = 0; step < 100; ++step) {
+void NeuralNetwork::train(const std::vector<Data>& dataset, int steps) {
+  for (int step = 0; step < steps; ++step) {
     std::cout << "Train_step: " << step << std::endl;
     trainStep(dataset);
-    // std::cout << std::endl << std::endl << std::endl;
-    std::cout << std::endl;
   }
 }
 
@@ -39,70 +37,18 @@ void NeuralNetwork::trainStep(const std::vector<Data>& dataset) {
   for (int d = 0; d < int(dataset.size()); ++d) {
     initializePartialsNeuronsWeights();
     initializePartialsNeuronsBiases();
+
     std::cout << "d: " << d << std::endl;
-    // std::cout << "Feeding forward process starts." << std::endl;
     feedForward(dataset[d].in);
-
-    // std::cout << "neurons: " << std::endl;
-    // print(neurons);
-
-    // std::cout << "Last_layer: ";
-    // print(neurons[neurons.size() - 1]);
-
     std::cout << "out: ";
     print(out);
 
-    // std::cout << "Weights: ";
-    // print(weights);
-
-    // std::cout << "Biases: ";
-    // print(biases);
-
-    // ofstream file("weights.dat");
-    // for (int k = 0; k < int(weights.size()); ++k) {
-    //   file << "----------------" << k << "----------------" << std::endl;
-    //   for (int i = 0; i < int(weights[k].size()); ++i) {
-    //     for (int j = 0; j < int(weights[k][i].size()); ++j)
-    //       file << weights[k][i][j] << "\t";
-    //     file << std::endl;
-    //   }
-    // }
-
-    // std::cout << "Computing dataGradient process starts." << std::endl;
     dataGradient(dataset[d]);
-
-    // std::cout << "gradient_weights: ";
-    // print(gradient.weights);
-
-    // std::cout << "gradient_biases: ";
-    // print(gradient.biases);
-
-    // ofstream file2("gradient.dat");
-    // for (int k = 0; k < int(weights.size()); ++k) {
-    //   file2 << "----------------" << k << "----------------" << std::endl;
-    //   for (int i = 0; i < int(weights[k].size()); ++i) {
-    //     for (int j = 0; j < int(weights[k][i].size()); ++j)
-    //       file2 << weights[k][i][j] << "\t";
-    //     file2 << std::endl;
-    //   }
-    // }
-
-    // std::cout << "asdfasdf: " << std::endl;
-    // for (int l = 0; l < neurons.size(); ++l)
-    //   for (int k = 0; k < neurons[l].size(); ++k) {
-    //     std::cout << "l_y_k: " << l << " " << k << std::endl;
-    //     print(partialsNeuronsWeights[l][k]);
-    //   }
-    // std::cout << std::endl << std::endl;
-
     error += errorData(dataset[d]);
   }
-  // std::cout << "Gradient:" << std::endl;
-  // print(gradient.weights);
-  // std::cout << "Updating weights process starts." << std::endl;
-  updateWeightsAndBiases();
 
-  std::cout << "Error_dataset: " << error << std::endl;
+  updateWeightsAndBiases();
+  std::cout << "Error_dataset: " << error << std::endl << std::endl;
 }
 
 
@@ -224,13 +170,11 @@ void NeuralNetwork::initializePartialsNeuronsBiases() {
 
 void NeuralNetwork::partialOutputNeurons() {
   int numLayers = neurons.size();
-  partialsOutputNeurons = VVF(neurons[numLayers - 1].size(), VF(neurons[numLayers - 1].size())); // TODO: initialized as zero!
+  partialsOutputNeurons = VVF(neurons[numLayers - 1].size(),
+                              VF(neurons[numLayers - 1].size()));
   for (int p = 0; p < int(partialsOutputNeurons.size()); ++p)
-    // TODO: modify this, is only correct when softmax is not applied!
     for (int q = 0; q < int(partialsOutputNeurons[p].size()); ++q)
-      if (p == q)
-        partialsOutputNeurons[p][q] = 1;
-    // partialsOutputNeurons[p] = convertIntoProbDistDerivative(out, p);
+      partialsOutputNeurons[p][q] = convertIntoProbDistDerivative(p, q, out);
 }
 
 
