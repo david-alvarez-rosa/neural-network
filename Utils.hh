@@ -13,7 +13,7 @@ void swap(float &a, float &b);
 void print(VF v);
 
 // Print a vector.
-void print(VI v);
+void print(std::vector<int> v);
 
 // Prints tensor.
 void print(VVVF T);

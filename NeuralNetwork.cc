@@ -1,7 +1,7 @@
 #include "NeuralNetwork.hh"
 
 
-NeuralNetwork::NeuralNetwork(VI neuronsPerLayer) {
+NeuralNetwork::NeuralNetwork(std::vector<int> neuronsPerLayer) {
   int numLayers = neuronsPerLayer.size();
   neurons = VVF(numLayers); neuronsNotActivated = VVF(numLayers);
   weights = VVVF(numLayers - 1); biases =  VVF(numLayers - 1);
@@ -19,17 +19,17 @@ NeuralNetwork::NeuralNetwork(VI neuronsPerLayer) {
 }
 
 
-void NeuralNetwork::train(vector<Data>& dataset) {
-  for (int step = 0; step < 500; ++step) {
-    // cout << "Train_step: " << step << endl;
+void NeuralNetwork::train(const std::vector<Data>& dataset) {
+  for (int step = 0; step < 100; ++step) {
+    std::cout << "Train_step: " << step << std::endl;
     trainStep(dataset);
-    // cout << endl << endl << endl;
-    cout << endl;
+    // std::cout << std::endl << std::endl << std::endl;
+    std::cout << std::endl;
   }
 }
 
 
-void NeuralNetwork::trainStep(vector<Data>& dataset) {
+void NeuralNetwork::trainStep(const std::vector<Data>& dataset) {
   // Initialize gradient with 0's.
   initializeGradient();
 
@@ -39,80 +39,84 @@ void NeuralNetwork::trainStep(vector<Data>& dataset) {
   for (int d = 0; d < int(dataset.size()); ++d) {
     initializePartialsNeuronsWeights();
     initializePartialsNeuronsBiases();
-    cout << "d: " << d << endl;
-    // cout << "Feeding forward process starts." << endl;
+    std::cout << "d: " << d << std::endl;
+    // std::cout << "Feeding forward process starts." << std::endl;
     feedForward(dataset[d].in);
 
-    // cout << "neurons: " << endl;
+    // std::cout << "neurons: " << std::endl;
     // print(neurons);
 
-    cout << "out: ";
-    print(out);
-
-    // cout << "Last_layer: ";
+    // std::cout << "Last_layer: ";
     // print(neurons[neurons.size() - 1]);
 
-    // cout << "Weights: ";
+    std::cout << "out: ";
+    print(out);
+
+    // std::cout << "Weights: ";
     // print(weights);
+
+    // std::cout << "Biases: ";
+    // print(biases);
 
     // ofstream file("weights.dat");
     // for (int k = 0; k < int(weights.size()); ++k) {
-    //   file << "----------------" << k << "----------------" << endl;
+    //   file << "----------------" << k << "----------------" << std::endl;
     //   for (int i = 0; i < int(weights[k].size()); ++i) {
     //     for (int j = 0; j < int(weights[k][i].size()); ++j)
     //       file << weights[k][i][j] << "\t";
-    //     file << endl;
+    //     file << std::endl;
     //   }
     // }
 
-    // cout << "Computing dataGradient process starts." << endl;
+    // std::cout << "Computing dataGradient process starts." << std::endl;
     dataGradient(dataset[d]);
 
-    cout << "after" << endl;
-
-    // cout << "gradient: ";
+    // std::cout << "gradient_weights: ";
     // print(gradient.weights);
+
+    // std::cout << "gradient_biases: ";
+    // print(gradient.biases);
 
     // ofstream file2("gradient.dat");
     // for (int k = 0; k < int(weights.size()); ++k) {
-    //   file2 << "----------------" << k << "----------------" << endl;
+    //   file2 << "----------------" << k << "----------------" << std::endl;
     //   for (int i = 0; i < int(weights[k].size()); ++i) {
     //     for (int j = 0; j < int(weights[k][i].size()); ++j)
     //       file2 << weights[k][i][j] << "\t";
-    //     file2 << endl;
+    //     file2 << std::endl;
     //   }
     // }
 
-    // cout << "asdfasdf: " << endl;
+    // std::cout << "asdfasdf: " << std::endl;
     // for (int l = 0; l < neurons.size(); ++l)
     //   for (int k = 0; k < neurons[l].size(); ++k) {
-    //     cout << "l_y_k: " << l << " " << k << endl;
+    //     std::cout << "l_y_k: " << l << " " << k << std::endl;
     //     print(partialsNeuronsWeights[l][k]);
     //   }
-    // cout << endl << endl;
+    // std::cout << std::endl << std::endl;
 
     error += errorData(dataset[d]);
   }
-  // cout << "Gradient:" << endl;
+  // std::cout << "Gradient:" << std::endl;
   // print(gradient.weights);
-  // cout << "Updating weights process starts." << endl;
+  // std::cout << "Updating weights process starts." << std::endl;
   updateWeightsAndBiases();
 
-  cout << "Error_dataset: " << error << endl;
+  std::cout << "Error_dataset: " << error << std::endl;
 }
 
 
-void NeuralNetwork::test(vector<Data>& dataset) {
+void NeuralNetwork::test(const std::vector<Data>& dataset) {
   int correct = 0;
   for (int i = 0; i < int(dataset.size()); ++i) {
-    cout << "Test_iteration: " << i << endl;
+    std::cout << "Test_iteration: " << i << std::endl;
     feedForward(dataset[i].in);
     int number = vectorMaxPos(out);
-    cout << number << endl;
+    std::cout << number << std::endl;
   }
 
   float percentage = 100 * correct / float(dataset.size());
-  cout << "Percentage: " << percentage << "%." << endl;
+  std::cout << "Percentage: " << percentage << "%." << std::endl;
 }
 
 
@@ -134,7 +138,7 @@ void NeuralNetwork::activateNeurons(int l) {
 }
 
 
-void NeuralNetwork::dataGradient(Data& data) {
+void NeuralNetwork::dataGradient(const Data& data) {
   // Compute partial derivatives of output respect neurons.
   partialOutputNeurons();
 
@@ -151,13 +155,15 @@ void NeuralNetwork::dataGradient(Data& data) {
 }
 
 
-float NeuralNetwork::partialDataErrorWeight(int t, int i, int j, Data& data) {
+float NeuralNetwork::partialDataErrorWeight(int t, int i, int j,
+                                            const Data& data) {
   float derivative = 0;
   for (int q = 0; q < int(out.size()); ++q) {
     int numLayers = neurons.size();
     float aux = 0;
     for (int p = 0; p < int(neurons[numLayers - 1].size()); ++p)
-      aux += partialsOutputNeurons[q][p] * partialNeuronWeight(numLayers - 1, p, t, i, j);
+      aux += partialsOutputNeurons[q][p]
+        * partialNeuronWeight(numLayers - 1, p, t, i, j);
     derivative += (aux * errorDerivative(data.out[q], out[q]));
   }
 
@@ -165,7 +171,7 @@ float NeuralNetwork::partialDataErrorWeight(int t, int i, int j, Data& data) {
 }
 
 
-float NeuralNetwork::partialDataErrorBias(int t, int i, Data& data) {
+float NeuralNetwork::partialDataErrorBias(int t, int i, const  Data& data) {
   float derivative = 0;
   for (int q = 0; q < int(out.size()); ++q) {
     int numLayers = neurons.size();
@@ -281,7 +287,7 @@ void NeuralNetwork::updateWeightsAndBiases() {
 }
 
 
-float NeuralNetwork::errorData(Data& data) {
+float NeuralNetwork::errorData(const Data& data) {
   float error = 0;
   for (int i = 0; i < int(data.out.size()); ++i)
       error += errorFunction(data.out[i], out[i]);

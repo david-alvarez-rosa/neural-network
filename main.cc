@@ -8,26 +8,24 @@
 
 
 int main() {
-  cout.setf(ios::fixed);
-  cout.precision(4);
+  std::cout.setf(std::ios::fixed);
+  std::cout.precision(4);
 
   // Read data.
-  const int sizeTrainDataset = 2;
-  vector<Data> trainDataset;
-  // ifstream file("data/train.dat");
-  ifstream file("test/train.dat");
+  const int sizeTrainDataset = 5;
+  std::vector<Data> trainDataset;
+  std::fstream file("data/train.dat", std::fstream::in);
   for (int i = 0; i < sizeTrainDataset; ++i)
     trainDataset.push_back(Data(file));
 
   const int sizeTestDataset = 0;
-  vector<Data> testDataset;
-  file = ifstream("data/test.dat");
+  std::vector<Data> testDataset;
+  file = std::fstream("data/test.dat", std::fstream::in);
   for (int i = 0; i < sizeTestDataset; ++i)
     testDataset.push_back(Data(file));
 
   // Choose model and initialize Neural Network.
-  VI neuronsPerLayer = {3, 2}; //
-  // VI neuronsPerLayer = {28*28, 40, 10};
+  std::vector<int> neuronsPerLayer = {28*28, 30, 10};
   NeuralNetwork neuralNetwork(neuronsPerLayer);
 
   // Train Neural Network.

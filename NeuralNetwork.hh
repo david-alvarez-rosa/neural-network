@@ -15,13 +15,13 @@ public:
   VF out; // Output of the Neural Network.
 
   // Constructor (given number of neurons per layer as a vector).
-  NeuralNetwork(VI neuronsPerLayer);
+  NeuralNetwork(std::vector<int> neuronsPerLayer);
 
   // Train neural network.
-  void train(vector<Data>& data);
+  void train(const std::vector<Data>& data);
 
   // Test neural network.
-  void test(vector<Data>& data);
+  void test(const std::vector<Data>& data);
 
 private:
   struct Gradient {
@@ -44,7 +44,7 @@ private:
   VVF neuronsNotActivated;
 
   // Train step.
-  void trainStep(vector<Data>& dataset);
+  void trainStep(const std::vector<Data>& dataset);
 
   // Forward propagation to compute values of all neurons.
   void feedForward(VF X);
@@ -53,7 +53,7 @@ private:
   void activateNeurons(int l);
 
   // Acumulate the gradient of error respect single data in dataset.
-  void dataGradient(Data& data);
+  void dataGradient(const Data& data);
 
   // Initialize gradient with 0's.
   void initializeGradient();
@@ -65,10 +65,10 @@ private:
   void initializePartialsNeuronsBiases();
 
   // Compute individual gradient respect a weight.
-  float partialDataErrorWeight(int t, int i, int j, Data& data);
+  float partialDataErrorWeight(int t, int i, int j, const Data& data);
 
   // Compute individual gradient respect a bias.
-  float partialDataErrorBias(int t, int i, Data& data);
+  float partialDataErrorBias(int t, int i, const Data& data);
 
   // Compute partial derivatives of x[l][k] respect weight[t][i][j].
   float partialNeuronWeight(int l, int k, int t, int i, int j);
@@ -83,7 +83,7 @@ private:
   void updateWeightsAndBiases();
 
   // Compute error.
-  float errorData(Data& datas);
+  float errorData(const Data& datas);
 };
 
 

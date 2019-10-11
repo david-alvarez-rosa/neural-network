@@ -3,16 +3,14 @@
 
 #include <vector>
 
-using namespace std;
-
 
 // Declarations of multiple dimensions vectors of floats.
-using VF = vector<float>;
-using VVF = vector<VF>;
-using VVVF = vector<VVF>;
-using VVVVF = vector<VVVF>;
-using VVVVVF = vector<VVVVF>;
-using VI = vector<int>;
+using VF = std::vector<float>;
+using VVF = std::vector<VF>;
+using VVVF = std::vector<VVF>;
+using VVVVF = std::vector<VVVF>;
+using VVVVVF = std::vector<VVVVF>;
+using VI = std::vector<int>;
 
 
 #endif
