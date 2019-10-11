@@ -20,11 +20,13 @@ NeuralNetwork::NeuralNetwork(std::vector<int> neuronsPerLayer) {
 
 
 void NeuralNetwork::train(const std::vector<Data>& dataset, int steps) {
-  for (int step = 0; step < steps; ++step) {
-    std::cout << "Train_step: " << step << std::endl;
+  for (int step = 0; step < steps; ++step)
     trainStep(dataset);
-  }
 }
+
+
+// TODO: delete this line.
+#include <fstream>
 
 
 void NeuralNetwork::trainStep(const std::vector<Data>& dataset) {
@@ -38,25 +40,36 @@ void NeuralNetwork::trainStep(const std::vector<Data>& dataset) {
     initializePartialsNeuronsWeights();
     initializePartialsNeuronsBiases();
 
-    std::cout << "d: " << d << std::endl;
     feedForward(dataset[d].in);
-    std::cout << "out: ";
-    print(out);
-
     dataGradient(dataset[d]);
+
     error += errorData(dataset[d]);
   }
 
+  // TODO: this saves the weigths in a file, get rid of this.
+  // TODO: get rid of this (start).
+  std::ofstream file("weights.dat");
+  // Normal weights.
+  for (int l = 0; l < int(weights.size()); ++l)
+    for (int i = 0; i < int(weights[l].size()); ++i)
+      for (int j = 0; j < int(weights[l][i].size()); ++j)
+        file << weights[l][i][j] << std::endl;
+  // Biases.
+  for (int l = 0; l < int(biases.size()); ++l)
+    for (int i = 0; i < int(biases[l].size()); ++i)
+      file << biases[l][i] << std::endl;
+  // TODO: get rid of this (end).
+
   updateWeightsAndBiases();
-  std::cout << "Error_dataset: " << error << std::endl << std::endl;
+  std::cout << error << std::endl;
 }
 
 
 void NeuralNetwork::test(const std::vector<Data>& dataset) {
+  std::cout << std::endl << "Testing starts." << std::endl;
   int correct = 0;
-  for (int i = 0; i < int(dataset.size()); ++i) {
-    std::cout << "Test_iteration: " << i << std::endl;
-    feedForward(dataset[i].in);
+  for (int d = 0; d < int(dataset.size()); ++d) {
+    feedForward(dataset[d].in);
     int number = vectorMaxPos(out);
     std::cout << number << std::endl;
   }

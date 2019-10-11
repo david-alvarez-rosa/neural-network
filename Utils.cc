@@ -38,14 +38,7 @@ void print(VVVF T) {
 
 void fillRandomly(VF &v) {
   for (int i = 0; i < int(v.size()); ++i)
-    v[i] = 0.02 * (rand() / float(RAND_MAX));
-    // v[1] = 1;
-  // for (int i = 0; i < int(v.size()); ++i) {
-  //   if (i%2 == 0)
-  //     v[i] = -1;
-  //   else
-  //     v[i]= 1;
-  // }
+    v[i] = 0.01 * (rand() / float(RAND_MAX));
 }
 
 
