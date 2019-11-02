@@ -3,38 +3,36 @@
 
 // Define here your activation function.
 float activation(float x) {
+  // This is without activation function.
+  return x;
+  // This is the sigmoid.
+  return 1/(1 + exponential(-x));
   // This is a modified ReLU
   if (x >= 0)
     return x;
   return x/100;
-  // This is the sigmoid.
-  // std::cout << "x: " << x << std::endl;
-  // std::cout << "sigma(x): " << 1/(1 + exponential(-x)) << std::endl;
-  return 1/(1 + exponential(-x));
   // This is the ReLU
   if (x >= 0)
     return x;
   return 0;
-  // This is without activation function.
-  return x;
 }
 
 
 // Define here the derivative of the activation function.
 float activationDerivative(float x) {
+  // This is without activation function.
+  return 1;
+  // This is the sigmoid derivative.
+  float sigmoid = activation(x);
+  return sigmoid * (1 - sigmoid);
   // This is the modified ReLU derivative.
   if (x >= 0)
     return 1;
   return 1/100;
-  // This is the sigmoid derivative.
-  float sigmoid = activation(x);
-  return sigmoid * (1 - sigmoid);
   // This is the ReLU derivative.
   if (x >= 0)
     return 1;
   return 0;
-  // This is without activation function.
-  return 1;
 }
 
 

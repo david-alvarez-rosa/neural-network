@@ -6,7 +6,6 @@
 #include <algorithm> // TODO: check this. This is used for random shuffle.
 
 
-
 NeuralNetwork::NeuralNetwork(std::vector<int> neuronsPerLayer) {
   int numLayers = neuronsPerLayer.size();
   neurons = VVF(numLayers); neuronsNotActivated = VVF(numLayers);
@@ -22,14 +21,7 @@ NeuralNetwork::NeuralNetwork(std::vector<int> neuronsPerLayer) {
     biases[l] = VF(neuronsPerLayer[l + 1]);
     fillRandomly(biases[l]);
   }
-
-  // weights[0] = {{0.16, 0.02, 0.63, 0.36},
-  //               {0.16, 0.25, 0.22, 0.29}};
-  // weights[1] = {{0.05, 0.43},
-  //               {0.33, 0.79},
-  //               {0.72, 0.91}};
 }
-
 
 
 void NeuralNetwork::train(const std::vector<Data>& dataset, int epochs,
@@ -71,9 +63,6 @@ void NeuralNetwork::trainIteration(const std::vector<Data>& dataset, int batchSi
   for (int i = 0; i < batchSize; ++i) {
     initializePartialsNeuronsWeights();
     initializePartialsNeuronsBiases();
-
-    // std::cout << "partial: " << partialNeuronWeight(2, 0, 1, 0, 0) << std::endl;
-    // return; // TODO get rid of this and the above.
 
     feedForward(dataset[order[batchSize*iterNumber + i]].in);
     dataGradient(dataset[order[batchSize*iterNumber + i]], batchSize);
@@ -125,9 +114,16 @@ void NeuralNetwork::dataGradient(const Data& data, int batchSize) {
   // Gradient respect weights.
   for (int t = 0; t < int(weights.size()); ++t)
     for (int i = 0; i < int(weights[t].size()); ++i)
-      for (int j = 0; j < int(weights[t][i].size()); ++j)
+      for (int j = 0; j < int(weights[t][i].size()); ++j) {
+        if (relativeError(partialDataErrorWeight(t, i, j, data),
+                     partialDataErrorWeightNumerical(t, i, j, data)) > 7) {
+          std::cout << "Error!" << std::endl;
+          std::cout << partialDataErrorWeight(t, i, j, data) << "\t"
+                    << partialDataErrorWeightNumerical(t, i, j, data) << std::endl;
+        }
         gradient.weights[t][i][j] +=
           partialDataErrorWeight(t, i, j, data) / float(batchSize);
+      }
 
   // Gradient respect biases.
   for (int t = 0; t < int(biases.size()); ++t)
@@ -261,16 +257,11 @@ float NeuralNetwork::partialNeuronBias(int l, int k, int t, int i) {
 
 void NeuralNetwork::updateWeightsAndBiases(float alpha) {
   // Update normal weights.
-  for (int l = 0; l < int(weights.size()); ++l) {
-    // std::cout << "l: " << l << std::endl;
+  for (int l = 0; l < int(weights.size()); ++l)
     for (int i = 0; i < int(weights[l].size()); ++i)
-      for (int j = 0; j < int(weights[l][i].size()); ++j) {
-        // std::cout << gradient.weights[l][i][j] << std::endl;
+      for (int j = 0; j < int(weights[l][i].size()); ++j)
         weights[l][i][j] -= alpha * gradient.weights[l][i][j];
-      }
-      }
 
-  // TODO: remember to descomment this!!!!
   // Update biases.
   for (int l = 0; l < int(biases.size()); ++l)
     for (int i = 0; i < int(biases[l].size()); ++i)
@@ -313,4 +304,29 @@ void NeuralNetwork::saveData(float error, float accuracy) {
 
   std::cout << "Error: " << error << "\t\t" << "Accuraccy: "
             << 100 * accuracy << std::endl;
+}
+
+
+float NeuralNetwork::partialDataErrorWeightNumerical(int t, int i, int j,
+                                                     const Data& data) {
+  double eps = 1e-4;
+
+  weights[t][i][j] -= eps;
+  feedForward(data.in);
+  double errorLeft = errorData(data);
+
+  weights[t][i][j] += 2*eps;
+  feedForward(data.in);
+  double errorRight = errorData(data);
+
+  // Leave all unchanged.
+  weights[t][i][j] -= eps;
+  feedForward(data.in);
+
+  return (errorRight - errorLeft) / (2 * eps);
+}
+
+
+float NeuralNetwork::relativeError(const float& x, const float& y) {
+  return 100 * std::abs(y - x) / x;
 }

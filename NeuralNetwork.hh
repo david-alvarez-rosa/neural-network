@@ -92,8 +92,11 @@ private:
   // Auxiliar function for saving dataset.
   void saveData(float error, float accuracy);
 
-  // TODO: delte this.
-  float round(float var);
+  // Computing partial numerically to check.
+  float partialDataErrorWeightNumerical(int t, int i, int j, const Data& data);
+
+  // TODO: delete this.
+  float relativeError(const float& x, const float& y);
 };
 
 
