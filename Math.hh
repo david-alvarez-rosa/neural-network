@@ -27,10 +27,10 @@ float pow(float a, int n);
 float expInterval(float x);
 
 // Computes exp(x).
-float exp(float x);
+float exponential(float x);
 
 // Computes log(x).
-float log(float x);
+float logarithm(float x);
 
 
 #endif

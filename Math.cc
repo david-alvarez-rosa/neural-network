@@ -69,7 +69,7 @@ float expInterval(float x) {
 }
 
 
-float exp(float x) {
+float exponential(float x) {
   if (x > 20 or x < -20)
     std::cout << "Se está aplicando la exponencial a un valor x, |x| > 20." << std::endl;
 
@@ -78,21 +78,21 @@ float exp(float x) {
     int n = x;
     return expInterval(x - n)*pow(M_E, n);
   }
-  return 1/exp(-x);
+  return 1/exponential(-x);
 }
 
 
-float log(float x) {
+float logarithm(float x) {
   float solRight = 0;
   float solLeft = 0;
-  while (exp(solRight) < x)
+  while (exponential(solRight) < x)
     solRight += 10;
-  while (exp(solLeft) > x)
+  while (exponential(solLeft) > x)
     solLeft -= 10;
 
   while (solRight - solLeft > 1e-6) {
     float solMed = (solRight + solLeft) / 2;
-    if (exp(solMed) > x)
+    if (exponential(solMed) > x)
       solRight = solMed;
     else
       solLeft = solMed;
