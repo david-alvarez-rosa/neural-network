@@ -15,14 +15,12 @@ public:
   VVVF weights; VVF biases;
   VF out; // Output of the Neural Network.
 
-  // Constructor (given number of neurons per layer as a vector).
   NeuralNetwork(std::vector<int> neuronsPerLayer);
 
-  // Train neural network.
-  void train(const std::vector<Data>& data, int steps);
+  void train(const std::vector<Data>& dataset, int epochs, int batchSize = 100,
+             float alpha = 0.1);
 
-  // Test neural network.
-  void test(const std::vector<Data>& data);
+  void test(const std::vector<Data>& dataset);
 
 private:
   struct Gradient {
@@ -44,8 +42,13 @@ private:
   // Before aplying activation function.
   VVF neuronsNotActivated;
 
-  // Train step.
-  void trainStep(const std::vector<Data>& dataset);
+  // Train epoch.
+  void trainEpoch(const std::vector<Data>& dataset, int batchSize, float alpha);
+
+  // Train iteration.
+  void trainIteration(const std::vector<Data>& dataset, int batchSize,
+                                    float alpha, const std::vector<int>& order,
+                                    int iterNumber);
 
   // Forward propagation to compute values of all neurons.
   void feedForward(VF X);
@@ -53,8 +56,8 @@ private:
   // Activation neurons in layer l.
   void activateNeurons(int l);
 
-  // Acumulate the gradient of error respect single data in dataset.
-  void dataGradient(const Data& data);
+  // Acumulate the gradient of error respect single dataset in dataset.
+  void dataGradient(const Data& data, int batchSize);
 
   // Initialize gradient with 0's.
   void initializeGradient();
@@ -69,7 +72,7 @@ private:
   float partialDataErrorWeight(int t, int i, int j, const Data& data);
 
   // Compute individual gradient respect a bias.
-  float partialDataErrorBias(int t, int i, const Data& data);
+  float partialDataErrorBias(int t, int i, const Data& datas);
 
   // Compute partial derivatives of x[l][k] respect weight[t][i][j].
   float partialNeuronWeight(int l, int k, int t, int i, int j);
@@ -81,10 +84,16 @@ private:
   void partialOutputNeurons();
 
   // Update weights and biases.
-  void updateWeightsAndBiases();
+  void updateWeightsAndBiases(float alpha);
 
   // Compute error.
-  float errorData(const Data& datas);
+  float errorData(const Data& data);
+
+  // Auxiliar function for saving dataset.
+  void saveData(float error, float accuracy);
+
+  // TODO: delte this.
+  float round(float var);
 };
 
 
