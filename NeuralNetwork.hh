@@ -1,7 +1,9 @@
 #ifndef NEURALNETWORK_HH
 #define NEURALNETWORK_HH
 
-#include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
 #include "Defs.hh"
 #include "Utils.hh"
 #include "Math.hh"
@@ -14,13 +16,15 @@ public:
   VVF neurons;
   VVVF weights; VVF biases;
   VF out; // Output of the Neural Network.
+  std::vector<Data> trainDataset, testDataset;
+  double learningRate;
 
   NeuralNetwork(std::vector<int> neuronsPerLayer);
 
-  void train(const std::vector<Data>& dataset, int epochs, int batchSize = 100,
-             float alpha = 0.1);
+  void train(const std::vector<Data>& trainDataset, int epochs,
+             int batchSize = 100, double learningRate = 0.1);
 
-  void test(const std::vector<Data>& dataset);
+  void test(const std::vector<Data>& testDataset);
 
 private:
   struct Gradient {
@@ -43,12 +47,10 @@ private:
   VVF neuronsNotActivated;
 
   // Train epoch.
-  void trainEpoch(const std::vector<Data>& dataset, int batchSize, float alpha);
+  void trainEpoch(int batchSize);
 
   // Train iteration.
-  void trainIteration(const std::vector<Data>& dataset, int batchSize,
-                                    float alpha, const std::vector<int>& order,
-                                    int iterNumber);
+  void trainIteration(int batchSize, const std::vector<int>& order, int iterNumber);
 
   // Forward propagation to compute values of all neurons.
   void feedForward(VF X);
@@ -57,7 +59,7 @@ private:
   void activateNeurons(int l);
 
   // Acumulate the gradient of error respect single dataset in dataset.
-  void dataGradient(const Data& data, int batchSize);
+  void dataGradient(int d, int batchSize);
 
   // Initialize gradient with 0's.
   void initializeGradient();
@@ -69,34 +71,28 @@ private:
   void initializePartialsNeuronsBiases();
 
   // Compute individual gradient respect a weight.
-  float partialDataErrorWeight(int t, int i, int j, const Data& data);
+  double partialDataErrorWeight(int d, int t, int i, int j);
 
   // Compute individual gradient respect a bias.
-  float partialDataErrorBias(int t, int i, const Data& datas);
+  double partialDataErrorBias(int d, int t, int i);
 
   // Compute partial derivatives of x[l][k] respect weight[t][i][j].
-  float partialNeuronWeight(int l, int k, int t, int i, int j);
+  double partialNeuronWeight(int l, int k, int t, int i, int j);
 
   // Compute partial derivatives of x[l][k] respect biast[t][i].
-  float partialNeuronBias(int l, int k, int t, int i);
+  double partialNeuronBias(int l, int k, int t, int i);
 
   // Compute partial derivatives of output respect last layer neurons.
   void partialOutputNeurons();
 
   // Update weights and biases.
-  void updateWeightsAndBiases(float alpha);
+  void updateWeightsAndBiases();
 
   // Compute error.
-  float errorData(const Data& data);
+  double errorData(const Data& data);
 
-  // Auxiliar function for saving dataset.
-  void saveData(float error, float accuracy);
-
-  // Computing partial numerically to check.
-  float partialDataErrorWeightNumerical(int t, int i, int j, const Data& data);
-
-  // TODO: delete this.
-  float relativeError(const float& x, const float& y);
+  // Save data to files.
+  void saveData();
 };
 
 

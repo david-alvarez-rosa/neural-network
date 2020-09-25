@@ -7,7 +7,7 @@
 
 
 // Swaps two elements.
-void swap(float &a, float &b);
+void swap(double &a, double &b);
 
 // Print a vector.
 void print(VF v);

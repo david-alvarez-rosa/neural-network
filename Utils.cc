@@ -1,8 +1,8 @@
 #include "Utils.hh"
 
 
-void swap(float &a, float &b) {
-  float c = a;
+void swap(double &a, double &b) {
+  double c = a;
   a = b;
   b = c;
 }
@@ -38,8 +38,7 @@ void print(VVVF T) {
 
 void fillRandomly(VF &v) {
   for (int i = 0; i < int(v.size()); ++i)
-    // v[i] = int(6 * (rand() / float(RAND_MAX) - 0.5));
-    v[i] = 0.1 * (rand() / float(RAND_MAX) - 0.5);
+    v[i] = 0.001 * (rand() / double(RAND_MAX) - 0.5);
 }
 
 

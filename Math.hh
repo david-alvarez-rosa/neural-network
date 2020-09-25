@@ -12,7 +12,7 @@ VF sum(VF v, VF w);
 VF vectorDifference(VF v, VF w);
 
 // Dot product between two vectors v and w.
-float dotProduct(VF v, VF w);
+double dotProduct(VF v, VF w);
 
 // Given a vector returns position of the (first) maxim.
 int vectorMaxPos(VF v);
@@ -21,16 +21,16 @@ int vectorMaxPos(VF v);
 VF multiply(VVF A, VF v);
 
 // Computes a^n, with n a non-negative integer (quick-exponentiation).
-float pow(float a, int n);
+double pow(double a, int n);
 
 // Computes exp(x) for small x (between 0 and 1).
-float expInterval(float x);
+double expInterval(double x);
 
 // Computes exp(x).
-float exponential(float x);
+double exponential(double x);
 
 // Computes log(x).
-float logarithm(float x);
+double logarithm(double x);
 
 
 #endif

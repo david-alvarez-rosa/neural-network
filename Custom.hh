@@ -5,22 +5,22 @@
 
 
 // Activation function used for activate neurons.
-float activation(float x);
+double activation(double x);
 
 // Derivative of the activation function.
-float activationDerivative(float x);
+double activationDerivative(double x);
 
 // Error function to minimize in gradient descent.
-float errorFunction(float y, float yp);
+double errorFunction(double y, double yp);
 
 // Derivative of the error function whith respect yp.
-float errorDerivative(float y, float yp);
+double errorDerivative(double y, double yp);
 
 // Functions thath normalizes output into a probability distribution.
 VF convertIntoProbDist(VF v);
 
 // Derivative of the previous function respect v[k].
-float convertIntoProbDistDerivative(int p, int q, const VF& out);
+double convertIntoProbDistDerivative(int p, int q, const VF& out);
 
 
 #endif
