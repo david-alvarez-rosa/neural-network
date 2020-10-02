@@ -9,15 +9,14 @@
 #include "Math.hh"
 #include "Custom.hh"
 #include "Data.hh"
+#include "Layer.hh"
 
 
 class NeuralNetwork {
 public:
-  VVF neurons;
-  VVVF weights; VVF biases;
+  std::vector<Layer> layers;
+
   VF out; // Output of the Neural Network.
-  std::vector<Data> trainDataset, testDataset;
-  double learningRate;
 
   NeuralNetwork(std::vector<int> neuronsPerLayer);
 
@@ -27,24 +26,12 @@ public:
   void test(const std::vector<Data>& testDataset);
 
 private:
-  struct Gradient {
-    VVVF weights;
-    VVF biases;
-  };
+  int numLayers;
+  std::vector<Data> trainDataset, testDataset;
+  double learningRate;
 
-  Gradient gradient;
-
-  // Partial derivative of x[l][k] respect weight[t][i][j].
-  VVVVVF partialsNeuronsWeights;
-
-  // Partial derivative of x[l][k] respect bias[t][i].
-  VVVVF partialsNeuronsBiases;
-
-  // Partial derivative of yp[k] respect x[L][p]. Is partialsOutputneurons[p][k].
-  VVF partialsOutputNeurons;
-
-  // Before aplying activation function.
-  VVF neuronsNotActivated;
+  // Forward propagation to compute values of all neurons.
+  void feedForward(VF x);
 
   // Train epoch.
   void trainEpoch(int batchSize);
@@ -52,38 +39,11 @@ private:
   // Train iteration.
   void trainIteration(int batchSize, const std::vector<int>& order, int iterNumber);
 
-  // Forward propagation to compute values of all neurons.
-  void feedForward(VF X);
+  // Compute gradients given data.
+  void dataGradientNumerical(int d);
 
-  // Activation neurons in layer l.
-  void activateNeurons(int l);
-
-  // Acumulate the gradient of error respect single dataset in dataset.
-  void dataGradient(int d, int batchSize);
-
-  // Initialize gradient with 0's.
-  void initializeGradient();
-
-  // Initialize with -1's tensor with partial derivatives.
-  void initializePartialsNeuronsWeights();
-
-  // Initialize with -1's tensor with partial derivatives.
-  void initializePartialsNeuronsBiases();
-
-  // Compute individual gradient respect a weight.
-  double partialDataErrorWeight(int d, int t, int i, int j);
-
-  // Compute individual gradient respect a bias.
-  double partialDataErrorBias(int d, int t, int i);
-
-  // Compute partial derivatives of x[l][k] respect weight[t][i][j].
-  double partialNeuronWeight(int l, int k, int t, int i, int j);
-
-  // Compute partial derivatives of x[l][k] respect biast[t][i].
-  double partialNeuronBias(int l, int k, int t, int i);
-
-  // Compute partial derivatives of output respect last layer neurons.
-  void partialOutputNeurons();
+  // Backpropagation algorithm.
+  void backPropagate();
 
   // Update weights and biases.
   void updateWeightsAndBiases();
@@ -91,8 +51,8 @@ private:
   // Compute error.
   double errorData(const Data& data);
 
-  // Save data to files.
-  void saveData();
+  // // Save data to files.
+  // void saveData();
 };
 
 

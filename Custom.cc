@@ -2,28 +2,27 @@
 
 
 // Define here your activation function.
-double activation(double x) {
+double activationFunction(double x) {
   // This is without activation function.
   return x;
+  // This is the ReLU
+  if (x >= 0)
+    return x;
+  return 0;
   // This is the sigmoid.
   return 1/(1 + exponential(-x));
   // This is a modified ReLU
   if (x >= 0)
     return x;
   return x/100;
-  // This is the ReLU
-  if (x >= 0)
-    return x;
-  return 0;
 }
-
 
 // Define here the derivative of the activation function.
 double activationDerivative(double x) {
   // This is without activation function.
   return 1;
   // This is the sigmoid derivative.
-  double sigmoid = activation(x);
+  double sigmoid = activationFunction(x);
   return sigmoid * (1 - sigmoid);
   // This is the modified ReLU derivative.
   if (x >= 0)

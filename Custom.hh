@@ -5,7 +5,7 @@
 
 
 // Activation function used for activate neurons.
-double activation(double x);
+double activationFunction(double x);
 
 // Derivative of the activation function.
 double activationDerivative(double x);
