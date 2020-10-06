@@ -46,3 +46,8 @@ void fillRandomly(VVF &A) {
   for (int i = 0; i < int(A.size()); ++i)
     fillRandomly(A[i]);
 }
+
+
+double relativeError(double x, double y) {
+  return std::abs((x - y)/(std::max(std::min(x, y), 1e-3)));
+}

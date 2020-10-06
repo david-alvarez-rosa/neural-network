@@ -28,7 +28,7 @@ public:
   std::vector<Param> biases;
   std::vector<double> deltas;
 
-  Layer *prevLayer; Layer *nextLayer;
+  Layer* prevLayer; Layer* nextLayer;
 
   Layer(int size, int sizeNextLayer = 0);
 
@@ -38,6 +38,10 @@ public:
 
   void computeGradients();
 
+  void zeroGradients();
+
+  void updateParameters(const double& learningRate);
+
 
 private:
   double mean = 0, std = 0.01;
@@ -45,7 +49,6 @@ private:
   void fillRandomly(std::vector<Param>& v);
 
   void fillRandomly(std::vector< std::vector<Param> >& v);
-
 };
 
 

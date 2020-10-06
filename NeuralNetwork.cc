@@ -1,10 +1,6 @@
 #include "NeuralNetwork.hh"
 
 
-#include <iostream>
-
-
-
 NeuralNetwork::NeuralNetwork(std::vector<int> neuronsPerLayer) {
   numLayers = neuronsPerLayer.size();
 
@@ -27,11 +23,10 @@ NeuralNetwork::NeuralNetwork(std::vector<int> neuronsPerLayer) {
 void NeuralNetwork::feedForward(VF x) {
   // Pass input to first layer.
   Layer& layer = layers[0];
-  for (int i = 0; i < int(x.size()); ++i) {
-    layer.neurons[i].deactivated = x[i];
-    layer.neurons[i].activated = x[i];
-  }
+  for (int i = 0; i < int(x.size()); ++i)
+    layer.neurons[i].deactivated = layer.neurons[i].activated = x[i];
 
+  // Forward.
   for (int l = 0; l < numLayers - 1; ++l)
     layers[l].forward();
 
@@ -42,10 +37,8 @@ void NeuralNetwork::feedForward(VF x) {
   out = VF(lastLayer.size);
   for (int i = 0; i < lastLayer.size; ++i)
     out[i] = lastLayer.neurons[i].deactivated;
+
   return;
-
-
-
 
 
 
@@ -73,6 +66,8 @@ void NeuralNetwork::train(const std::vector<Data>& trainDataset, int epochs,
     trainEpoch(batchSize);
     // saveData();
   }
+
+  test(trainDataset);
 }
 
 
@@ -85,6 +80,7 @@ void NeuralNetwork::trainEpoch(int batchSize) {
 
   for (int i = 0; i < int(trainDataset.size()) / double(batchSize); ++i) {
     std::cout << "Iter: " << i + 1 << "\t\t";
+    zeroGradients();
     trainIteration(batchSize, order, i);
   }
 }
@@ -107,38 +103,34 @@ void NeuralNetwork::trainIteration(int batchSize, const std::vector<int>& order,
     if (number == vectorMaxPos(trainDataset[d].out))
       ++correct;
 
-    backPropagate();
+    backPropagate(d);
 
-    dataGradientNumerical(d);
+    // dataGradientNumerical(d);
   }
 
-  // updateWeightsAndBiases();
+  updateParameters();
   std::cout << "Error: " << error / double(batchSize) << "\t\t"
             << "Accuraccy: " << correct / double(batchSize) * 100 << std::endl;
 }
 
 
-void NeuralNetwork::updateWeightsAndBiases() {
-  for (int l = 0; l < numLayers - 1; ++l) {
-    Layer& layer = layers[l];
-    Layer& nextLayer = layers[l + 1];
-    for (int i = 0; i < nextLayer.size; ++i) {
-      for (int j = 0; j < layer.size; ++j)
-        layer.weights[i][j].value -= learningRate*layer.weights[i][j].gradient;
-      layer.biases[i].value -= learningRate*layer.biases[i].gradient;
-    }
-
-  }
+void NeuralNetwork::updateParameters() {
+  for (int l = 0; l < numLayers - 1; ++l)
+    layers[l].updateParameters(learningRate);
 }
 
 
 void NeuralNetwork::dataGradientNumerical(int d) {
+  int numCorrect = 0;
+  int numIncorrect = 0;
+
+  const double EPS = 1e-8;
+
   for (int l = 0; l < numLayers - 1; ++l) {
     Layer& layer = layers[l];
     Layer& nextLayer = layers[l + 1];
     for (int i = 0; i < nextLayer.size; ++i) {
       for (int j = 0; j < layer.size; ++j) {
-        double EPS = 1e-6;
 
         layer.weights[i][j].value -= EPS;
         feedForward(trainDataset[d].in);
@@ -150,12 +142,28 @@ void NeuralNetwork::dataGradientNumerical(int d) {
 
         layer.weights[i][j].value -= EPS;
 
+        double gradientAux = (errorPlus - errorMinus)/(2*EPS);
+        double gradient = layer.weights[i][j].gradient;
 
-        std::cout << layer.weights[i][j].gradient << std::endl;
-        std::cout << layer.weights[i][j].gradient - (errorPlus - errorMinus)/(2*EPS)
-                  << std::endl << std::endl;
+        // layer.weights[i][j].gradient += gradientAux;
+
+        if (relativeError(gradientAux, gradient) > 1e-3)
+          ++numIncorrect;
+        else
+          ++numCorrect;
+
+        // if (gradient == 0)
+        //   std::cout << "All is zero!" << std::endl;
+        // else
+        //   std::cout << "Not zero!" << std::endl;
+
+        // std::cout << l << " " << i << " " << j << std::endl;
+        // std::cout << gradientAux << std::endl;
+        // std::cout << gradient << std::endl << std::endl;
+
+        // double relError = relativeError(layer.weights[i][j].gradient, gradientAux);
+        // double absError = std::abs(layer.weights[i][j].gradient - gradientAux);
       }
-      double EPS = 1e-5;
 
       layer.biases[i].value -= EPS;
       feedForward(trainDataset[d].in);
@@ -167,14 +175,29 @@ void NeuralNetwork::dataGradientNumerical(int d) {
 
       layer.biases[i].value -= EPS;
 
-      layer.biases[i].gradient = (errorPlus - errorMinus)/(2*EPS);
+      double gradientAux = (errorPlus - errorMinus)/(2*EPS);
+      double gradient = layer.biases[i].gradient;
+      if (relativeError(gradientAux, gradient) > 1e-3)
+          ++numIncorrect;
+        else
+          ++numCorrect;
+
+      layer.biases[i].gradient += gradientAux;
     }
   }
+
+  std::cout << "Number correct: " << numCorrect << std::endl;
+  std::cout << "Number incorrect: " << numIncorrect << std::endl;
 }
 
 
-void NeuralNetwork::backPropagate() {
-  for (int l = numLayers - 1; l >= 0; --l) {
+void NeuralNetwork::backPropagate(int d) {
+  Layer& lastLayer = layers[numLayers - 1];
+  lastLayer.deltas = std::vector<double>(lastLayer.size, 0);
+  for (int i = 0; i < lastLayer.size; ++i)
+    lastLayer.deltas[i] = errorDerivative(trainDataset[d].out[i], out[i]);
+
+  for (int l = numLayers - 2; l >= 0; --l) {
     layers[l].backward();
     layers[l].computeGradients();
   }
@@ -225,3 +248,9 @@ double NeuralNetwork::errorData(const Data& data) {
 //     for (int i = 0; i < int(biases[l].size()); ++i)
 //       fileBiases << biases[l][i] << std::endl;
 // }
+
+
+void NeuralNetwork::zeroGradients() {
+  for (int l = 0; l < numLayers - 1; ++l)
+    layers[l].zeroGradients();
+}

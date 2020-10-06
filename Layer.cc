@@ -2,7 +2,6 @@
 
 Layer::Layer(int size, int sizeNextLayer) {
   this->size = size;
-  this->sizeNextLayer = sizeNextLayer;
 
   neurons = std::vector<Neuron>(size);
   weights = std::vector< std::vector<Param> >(sizeNextLayer,
@@ -16,7 +15,7 @@ Layer::Layer(int size, int sizeNextLayer) {
 
 
 void Layer::forward() {
-  for (int i = 0; i < sizeNextLayer; ++i) {
+  for (int i = 0; i < nextLayer->size; ++i) {
     nextLayer->neurons[i].deactivated = 0;
     for (int j = 0; j < size; ++j)
       nextLayer->neurons[i].deactivated += weights[i][j].value*neurons[j].activated;
@@ -31,8 +30,10 @@ void Layer::backward() {
   deltas = std::vector<double>(size, 0);
 
   for (int i = 0; i < size; ++i)
-    for (int j = 0; j < sizeNextLayer; ++j)
+    for (int j = 0; j < nextLayer->size; ++j)
       deltas[i] += weights[j][i].value*nextLayer->deltas[j];
+
+  // print(deltas);
 }
 
 
@@ -55,15 +56,49 @@ void Layer::fillRandomly(std::vector< std::vector<Param> >& v) {
 
 
 
-
-
 void Layer::computeGradients() {
   // Weights.
-  for (int i = 0; i < sizeNextLayer; ++i)
-    for (int j = 0; j < size; ++j)
-      weights[i][j].gradient = neurons[j].deactivated*nextLayer->deltas[i];
+  for (int i = 0; i < nextLayer->size; ++i)
+    for (int j = 0; j < size; ++j) {
+      // std::cout << nextLayer->deltas[i] << std::endl;
+      // std::cout << neurons[j].deactivated << std::endl << std::endl;
+
+      weights[i][j].gradient += neurons[j].deactivated*nextLayer->deltas[i];
+    }
+
+
+  // for (int i = 0; i < nextLayer->size; ++i)
+  //   for (int j = 0; j < size; ++j)
+  //     std::cout << weights[i][j].gradient << "\t";
+  // std::cout << std::endl;
+
+
 
   // Biases.
-  for (int i = 0; i < sizeNextLayer; ++i)
+  for (int i = 0; i < nextLayer->size; ++i)
+    biases[i].gradient += nextLayer->deltas[i];
+}
+
+
+void Layer::zeroGradients() {
+  // Weights.
+  for (int i = 0; i < nextLayer->size; ++i)
+    for (int j = 0; j < size; ++j)
+      weights[i][j].gradient = 0;
+
+  // Biases.
+  for (int i = 0; i < nextLayer->size; ++i)
     biases[i].gradient = 0;
+}
+
+
+void Layer::updateParameters(const double& learningRate) {
+  // Weights.
+  for (int i = 0; i < nextLayer->size; ++i)
+    for (int j = 0; j < size; ++j)
+      weights[i][j].value -= learningRate*weights[i][j].gradient;
+
+  // Biases.
+  for (int i = 0; i < nextLayer->size; ++i)
+      biases[i].value -= learningRate*biases[i].gradient;
 }

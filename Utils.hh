@@ -27,5 +27,8 @@ void fillRandomly(VF &v);
 // Fill randomnly a matrix (entries between 0 and 1).
 void fillRandomly(VVF &A);
 
+// Compute relative error.
+double relativeError(double x, double y);
+
 
 #endif
