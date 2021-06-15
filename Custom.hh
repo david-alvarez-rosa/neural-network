@@ -2,44 +2,25 @@
 #define CUSTOM_HH
 
 
-#include <cmath>
+#include "Utils.hh"
 
 
-// Define here your activation function.
-template <typename T>
-T activationFunction(T x) {
-  // This is the ReLU
-  if (x >= 0)
-    return x;
-  return 0;
-  // This is without activation function.
-  return x;
-  // This is the sigmoid.
-  return 1/(1 + std::exp(-x));
-  // This is a modified ReLU
-  if (x >= 0)
-    return x;
-  return x/100;
-}
+// // Define here your custom activation function.
+// template <typename T>
+// T activationFunction(T x) {
+
+//   return 0;
+// }
 
 
-// Define here the derivative of the activation function.
-template <typename T>
-T activationDerivative(T x) {
-  // This is the ReLU derivative.
-  if (x >= 0)
-    return 1;
-  return 0;
-  // This is without activation function.
-  return 1;
-  // This is the sigmoid derivative.
-  T sigmoid = activationFunction(x);
-  return sigmoid * (1 - sigmoid);
-  // This is the modified ReLU derivative.
-  if (x >= 0)
-    return 1;
-  return 1/100;
-}
+// template <typename T>
+// T activationDerivative(T x) {
+//   if (x >= 0)
+//     return 1;
+//   return 0;
+// }
+
+
 
 
 // Define here your loss function (for comparing two real numbers).

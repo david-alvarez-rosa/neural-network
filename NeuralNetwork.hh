@@ -5,16 +5,18 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include "Custom.hh"
-#include "Data.hh"
 #include "Layer.hh"
+#include "Data.hh"
+#include "Utils.hh"
+#include "Custom.hh"
 
 
-template <typename T = float> class NeuralNetwork {
+template <typename T = float>
+class NeuralNetwork {
 public:
   std::vector< Layer<T> > layers;
   std::vector<T> out; // Output of the Neural Network.
-  T learningRate = 0.002;
+  T learningRate = 0.01;
   int batchSize = 100;
 
   // Constructor given neuronsPerLayer vector.
@@ -23,7 +25,6 @@ public:
   void train(std::vector< Data<T> >* trainDataset, int epochs);
 
   void test(std::vector< Data<T> >* testDataset);
-
 
 private:
   int numLayers;
@@ -53,15 +54,6 @@ private:
 
   // Compute gradients given data.
   void dataGradientNumerical(int d);
-
-
-
-
-
-
-
-
-  T relativeError(T x, T y);
 };
 
 
@@ -69,19 +61,17 @@ template <typename T>
 NeuralNetwork<T>::NeuralNetwork(std::vector<int> neuronsPerLayer) {
   numLayers = neuronsPerLayer.size();
 
+  // Create layers.
   for (int l = 0; l < numLayers - 1; ++l)
     layers.push_back(Layer<T>(neuronsPerLayer[l], neuronsPerLayer[l + 1]));
-
-  // Create output layer.
-  layers.push_back(Layer<T>(neuronsPerLayer[numLayers - 1]));
+  layers.push_back(Layer<T>(neuronsPerLayer[numLayers - 1], 0));
 
   // Connect layers.
-  layers[0].nextLayer = &layers[1];
-  for (int l = 1; l < numLayers - 1; ++l) {
-    layers[l].prevLayer = &layers[l - 1];
+  for (int l = 0; l < numLayers - 1; ++l)
     layers[l].nextLayer = &layers[l + 1];
-  }
-  layers[numLayers - 1].prevLayer = &layers[numLayers - 2];
+
+  // Give size to output of Neural Network.
+  out = std::vector<T>(neuronsPerLayer[numLayers - 1]);
 }
 
 
@@ -145,9 +135,9 @@ void NeuralNetwork<T>::trainIteration(const std::vector<int>& order,
 
   for (int i = 0; i < batchSize; ++i) {
     int d = order[batchSize*iterNumber + i];
+    // dataGradientNumerical(d);
     feedForward((*trainDataset)[d].in);
     backPropagate(d);
-    dataGradientNumerical(d);
   }
 
   updateParameters();
@@ -165,10 +155,8 @@ void NeuralNetwork<T>::feedForward(const std::vector<T>& x) {
   for (int l = 0; l < numLayers - 1; ++l)
     layers[l].forward();
 
-
-  // Without softmax.
+  // Copy output.
   Layer<T>& lastLayer = layers[numLayers - 1];
-  out = std::vector<T>(lastLayer.size);
   for (int i = 0; i < lastLayer.size; ++i)
     out[i] = lastLayer.neurons[i].activated;
 
@@ -177,7 +165,6 @@ void NeuralNetwork<T>::feedForward(const std::vector<T>& x) {
 
   // Softmax last layer.
   // Layer& lastLayer = layers[numLayers - 1];
-  out = std::vector<T>(lastLayer.size);
   double aux = 0;
   for (int i = 0; i < lastLayer.size; ++i)
     aux += std::exp(lastLayer.neurons[i].deactivated);
@@ -248,28 +235,16 @@ void NeuralNetwork<T>::dataGradientNumerical(int d) {
 
         layer.weights[i][j].value -= EPS;
 
-        T gradientAux = (lossPlus - lossMinus)/(2*EPS);
+
+        T gradientNum = (lossPlus - lossMinus)/(2*EPS);
+        layer.weights[i][j].gradient += gradientNum;
+        T gradientAux = layer.weights[i][j].gradient;
         T gradient = layer.weights[i][j].gradient;
 
-        // layer.weights[i][j].gradient += gradientAux;
-
-        if (relativeError(gradientAux, gradient) > 1e-2) {
+        if (relativeError(gradientAux, gradient) > 1e-4)
           ++numIncorrectW;
-          std::cout << l << " " << i << " " << j << std::endl;
-          std::cout << gradientAux << std::endl;
-          std::cout << gradient << std::endl << std::endl;
-        }
         else
           ++numCorrectW;
-
-        // if (gradient == 0)
-        //   std::cout << "All is zero!" << std::endl;
-        // else
-        //   std::cout << "Not zero!" << std::endl;
-
-
-        // double relLoss = relativeError(layer.weights[i][j].gradient, gradientAux);
-        // double absLoss = std::abs(layer.weights[i][j].gradient - gradientAux);
       }
 
       layer.biases[i].value -= EPS;
@@ -282,9 +257,12 @@ void NeuralNetwork<T>::dataGradientNumerical(int d) {
 
       layer.biases[i].value -= EPS;
 
-      T gradientAux = (lossPlus - lossMinus)/(2*EPS);
+      T gradientNum = (lossPlus - lossMinus)/(2*EPS);
+      layer.biases[i].gradient += gradientNum;
+      T gradientAux = layer.biases[i].gradient;
       T gradient = layer.biases[i].gradient;
-      if (relativeError(gradientAux, gradient) > 1e-3)
+
+      if (relativeError(gradientAux, gradient) > 1e-4)
           ++numIncorrectB;
         else
           ++numCorrectB;
@@ -297,12 +275,6 @@ void NeuralNetwork<T>::dataGradientNumerical(int d) {
   std::cout << "Number incorrec Wt: " << numIncorrectW << std::endl;
   std::cout << "Number correct B: " << numCorrectB << std::endl;
   std::cout << "Number incorrect B: " << numIncorrectB << std::endl;
-}
-
-
-template <typename T>
-T NeuralNetwork<T>::relativeError(T x, T y) {
-  return std::abs((x - y)/(std::max(T(1e-3), std::max(x, y))));
 }
 
 
