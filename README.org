@@ -1,7 +1,6 @@
 # -*- ispell-dictionary: "english" -*-
 
 
-#+TITLE: Neural Network
 #+AUTHOR: David Álvarez Rosa
 #+EMAIL: david@alvarezrosa.com
 #+STARTUP: showall
