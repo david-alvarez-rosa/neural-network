@@ -16,8 +16,8 @@ class NeuralNetwork {
 public:
   std::vector< Layer<T> > layers;
   std::vector<T> out; // Output of the Neural Network.
-  T learningRate = 0.01;
-  int batchSize = 100;
+  T learningRate = 0.07;
+  int batchSize = 2;
 
   // Constructor given neuronsPerLayer vector.
   NeuralNetwork(std::vector<int> neuronsPerLayer);

@@ -8,7 +8,7 @@ int main() {
   std::cout.precision(8);
 
   // Read data.
-  const int sizeTrainDataset = 1;
+  const int sizeTrainDataset = 3;
   std::vector< Data<double> > trainDataset;
   std::ifstream fileTrain("data/train.dat");
   for (int i = 0; i < sizeTrainDataset; ++i)
@@ -22,12 +22,12 @@ int main() {
     testDataset.push_back(Data<double>(fileTest));
 
   // Choose model and initialize Neural Network.
-  std::vector<int> neuronsPerLayer = {28*28, 50, 10};
+  std::vector<int> neuronsPerLayer = {28*28, 10, 10};
   NeuralNetwork<double> neuralNetwork(neuronsPerLayer);
 
   // Train Neural Network.
-  neuralNetwork.train(&trainDataset, 100);
+  neuralNetwork.train(&trainDataset, 200);
 
   // Test Neural Network.
-  neuralNetwork.test(&testDataset);
+  // neuralNetwork.test(&testDataset);
 }
