@@ -1,3 +1,74 @@
-* Neural Network
+# -*- ispell-dictionary: "english" -*-
 
-Implementation of a (fully connected) Neural Network from scratch in C++.
+
+#+TITLE: Neural Network
+#+AUTHOR: David Álvarez Rosa
+#+EMAIL: david@alvarezrosa.com
+#+STARTUP: showall
+
+
+* Neural Network
+Implementation of a feedforward (fully connected) Neural Network from scratch
+in C ++. In implementation extensive use has been made of the object-oriented
+programming paradigm. Therefore, the =Neuron.hh=, =Layer.hh= and
+=NeuralNetwork.hh= classes have been created (in increasing order of
+abstraction) and also the =Data.hh= classes to read data and =Custom.hh= to
+allow the user to configure it in a personalized way.
+
+** Getting Started 🚀
+These instructions will get you a copy of the project up and running on your
+local machine for development and testing purposes.
+
+*** Installing 🔧
+Clone the repository.
+#+BEGIN_SRC bash
+  git clone https://gitlab.com/david-alvarez-rosa/neural-network.git
+#+END_SRC
+
+Compile the code (it may take some time the first time).
+#+BEGIN_SRC bash
+  cd neural-network/
+  make
+#+END_SRC
+
+** Running the Algorithm ️
+Once the code is compiled just execute =main=,
+#+BEGIN_SRC bash
+  ./main
+#+END_SRC
+and enjoy.
+
+*Note.* The user's configuration together with the reading of the data must
+have been modified in the corresponding files prior to its execution.
+
+** Understanding the Code 💡
+Paper with implementation coming soon.
+
+** Objectives 🎯
+different objectives were had in mind when carrying out this project. They
+stand out among them:
+- Create a *modular* codebase using object-oriented programming.
+- Perform the gradient computation (i.e., partial derivatives of the loss
+  function) automatically, accurately (not numerically) and efficiently. The
+  algorithm used here is a recursive algorithm proposed by the author, as
+  opposed to the one known as /backpropagation/.
+- Create code that is *easy* to use by a user with no prior knowledge of Machine
+  Learning.
+- Allow the user as much *flexibility* as possible: from the choice of activation
+  functions (including neuron to neuron) to the number of layers (with their
+  corresponding number of neurons), through loss functions.
+
+** Difficulties and Future Work 🛠
+The most complex part of the training algorithm of a neural network is the
+computation of the gradient of the loss function with respect to the model
+parameters (i.e., the computation of each of the partial derivatives). Here we
+propose a recursive algorithm adapted exclusively to the topology of this type
+of networks, making extensive use of the chain rule for the computation of
+derivatives of composite functions (in its multivariate version). However,
+thinking about generalization to other more complex models (e.g, convolutional
+neural networks or recurrent neural networks), it would be more interesting to
+use graphs to represent the models, and, in this way, to be able to make use of
+the chain rule iterating through the nodes of the graph in reverse order.
+
+** Authors ✒️
+[[https://david.alvarezrosa.com/][David Álvarez Rosa]]
