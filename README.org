@@ -8,11 +8,12 @@
 
 * Neural Network
 Implementation of a feedforward (fully connected) Neural Network from scratch
-in C ++. In implementation extensive use has been made of the object-oriented
-programming paradigm. Therefore, the =Neuron.hh=, =Layer.hh= and
-=NeuralNetwork.hh= classes have been created (in increasing order of
-abstraction) and also the =Data.hh= classes to read data and =Custom.hh= to
-allow the user to configure it in a personalized way.
+in C++, based on the object-oriented programming paradigm. Accordingly, classes
+have been created in increasing order of abstraction to define the topology of
+this neural model: =Neuron.hh=, =Layer.hh= and =NeuralNetwork.hh=. Keeping in
+mind the ease of use for the user and allowing the greatest possible
+flexibility, classes are also designed for reading data (=Data.hh=) and for
+configuring the network (=Custom.hh=).
 
 ** Getting Started 🚀
 These instructions will get you a copy of the project up and running on your
@@ -64,7 +65,7 @@ parameters (i.e., the computation of each of the partial derivatives). Here we
 propose a recursive algorithm adapted exclusively to the topology of this type
 of networks, making extensive use of the chain rule for the computation of
 derivatives of composite functions (in its multivariate version). However,
-thinking about generalization to other more complex models (e.g, convolutional
+thinking about generalization to other more complex models (e.g., convolutional
 neural networks or recurrent neural networks), it would be more interesting to
 use graphs to represent the models, and, in this way, to be able to make use of
 the chain rule iterating through the nodes of the graph in reverse order.
